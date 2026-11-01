@@ -21,9 +21,9 @@ def tex(x):
     return re.sub(r"\{\{([^}]*)\}\}", lambda m: "{{" + m.group(1).replace("\\_", "_") + "}}", x)
 
 
-FIGS = {"3 The length baseline": ("armnetbench", "Failure AUROC on ArmnetBench: episode length vs two zero-shot reward models (Robometer-4B, TOPReward-8B)."),
+FIGS = {"3 The length baseline": ("armnetbench", "Failure AUROC on ArmnetBench (95 \\% CIs): episode length vs two zero-shot reward models (Robometer-4B, TOPReward with Qwen3-VL-8B)."),
         "4 Is it the timeout?": ("truncation", "Length observed up to a fraction of the task's longest episode, AUROC within policy (band: 95 \\% CI)."),
-        "5 Judges and monitors on our rollouts": ("own_monitors", "Monitors on 50 own rollouts: failures caught (of 8) vs successes flagged (of 42); shaded: the bar.")}
+        "5 Judges and monitors on our rollouts": ("own_monitors", "Fifty own rollouts: failures caught (of 8) vs successes flagged (of 42). Circles: mid-episode monitors; shaded: their bar ($\\geq$ 5/8 at $\\leq$ 1/20). Squares: judges at rest (one score per finished episode) at their in-sample G-flora operating point; the monitor bar does not apply to them.")}
 body = ""
 for t in ("1 Introduction", "2 Data and labels", "3 The length baseline", "4 Is it the timeout?", "5 Judges and monitors on our rollouts", "6 Limitations"):
     body += "\\section{" + t.split(" ", 1)[1] + "}\n" + tex(sec(t)) + "\n\n"
@@ -33,7 +33,7 @@ TPL = r"""\documentclass[10pt,twocolumn]{article}
 % WS-077: rendered by make_paper.py from main.src.tex (do not edit main.tex; main.src.tex comes from md2tex.py).
 \usepackage[margin=0.75in]{geometry}
 \usepackage{graphicx,amssymb,hyperref}
-\title{Elapsed time is the reward model to beat: failure judges and monitors on a low-cost arm}
+\title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}
 \author{Ravindu Somawansa\\Shisso Robotics}
 \date{}
 \begin{document}

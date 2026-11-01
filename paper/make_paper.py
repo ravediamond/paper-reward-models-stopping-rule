@@ -90,6 +90,7 @@ def collect():
     L = J(R / "length-null/expected/length_armnetbench.json"); a = "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
     put("ab_n", L["n"], a, "{:,d}"); put("ab_ok", L["n_success"], a, "{:,d}"); put("ab_fail", L["n_failure"], a, "{:,d}")
     put("len_pooled", L["a_pooled"]["auroc"], a); put("len_within", L["a_within_policy_stratified"]["auroc"], a)
+    put("len_pooled_lo", L["a_pooled"]["ci95"][0], a); put("len_pooled_hi", L["a_pooled"]["ci95"][1], a)
     put("len_within_lo", L["a_within_policy_stratified"]["ci95"][0], a); put("len_within_hi", L["a_within_policy_stratified"]["ci95"][1], a)
     pp = [v["auroc"] for v in L["a_per_policy"].values() if v["auroc"] is not None]
     put("len_pol_min", min(pp), a, "{:.2f}"); put("len_pol_max", max(pp), a, "{:.2f}"); put("n_pol", len(pp), a, "{:d}")
@@ -103,6 +104,7 @@ def collect():
     put("rbm_within", g["within_policy_mean"], a)
     o = J(R / "robometer-judge/expected/g9a_own.json")["A"]; a = "G9a-own, .../g9a_own/g9a_own.json"
     put("own_rbm", o["auroc"], a); put("own_len", o["baseline_length_auroc"], a, "{:.2f}"); put("own_n", o["n_success"] + o["n_failure"], a, "{:d}")
+    put("own_rbm_pol", o["baseline_policy_identity_auroc"], a)
     c3 = J(R / "robometer-judge/expected/g9c3_test_results.json")["result"]; a = "G9c-3, .../judge/results/g9c3/g9c3_test_results.json"
     put("g9c3_acc", 100 * c3["accuracy_on_judged"], a, "{:.1f}"); put("g9c3_fp", c3["false_positives"], a, "{:d}"); put("g9c3_fn", c3["false_negatives"], a, "{:d}")
     fl = J(R / "flora-input-format/expected/g_flora_summary.json"); a = "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
@@ -128,6 +130,14 @@ def collect():
     put("topr_cap", ab["s_cap"]["within"], a)
     put("topr_own", ow["s_succ"]["auroc"], a, "{:.2f}"); put("topr_own_lo", ow["s_succ"]["ci95"][0], a, "{:.2f}"); put("topr_own_hi", ow["s_succ"]["ci95"][1], a, "{:.2f}")
     put("topr_own_n", ow["n"], a, "{:d}"); put("topr_own_len", ow["neg_len"]["auroc"], a, "{:.2f}"); put("topr_own_pol", ow["pol_rate"]["auroc"], a, "{:.2f}")
+    put("topr_pooled_lo", ab["s_succ"]["pooled_ci95"][0], a); put("topr_pooled_hi", ab["s_succ"]["pooled_ci95"][1], a)
+    put("topr_yn_within", ab["s_yn"]["within"], a); put("topr_yn_own", ow["s_yn"]["auroc"], a, "{:.2f}")
+    put("topr_own_nt", ow["non_turbovla"]["auroc"], a, "{:.2f}"); put("topr_own_nt_n", ow["non_turbovla"]["n"], a, "{:d}")
+    import csv
+    lab = [r for r in csv.DictReader(open(R / "topreward/expected/own_rollout_labels.csv")) if r["outcome"] in ("success", "failure")]
+    a = "repro/topreward/expected/own_rollout_labels.csv, operator labels of the 69 rollouts"
+    put("own_fail", sum(r["outcome"] == "failure" for r in lab), a, "{:d}")
+    put("own_turbo_fail", sum(r["outcome"] == "failure" and r["policy"].startswith("turbovla") for r in lab), a, "{:d}")
     cc = J(R / "length-null/expected/counts_ci.json"); a = "Wilson 95 %, results/counts_ci.json"
     for key, name in (("flora_s_ci", "G-flora: successes flagged"), ("w1_l2_ci", "W1-A L2 surprise: failures caught"),
                       ("r2_log_ci", "REAP v2 logistic: failures"), ("g9c3_fp_ci", "G9c-3: false positives")):
@@ -140,15 +150,19 @@ def figures():
     import matplotlib.pyplot as plt
     FIG.mkdir(exist_ok=True); plt.rcParams.update({"font.size": 8, "figure.dpi": 150})
     L = J(R / "length-null/expected/length_armnetbench.json")
-    # 1. ArmnetBench: length vs Robometer
-    rows = [("episode length, pooled", float(N["len_pooled"]), "0.3"), ("episode length, within policy", float(N["len_within"]), "0.3"),
-            ("length seen up to 50 % of T, within policy", float(N["t50_within"]), "0.55"), ("Robometer-4B zero-shot, pooled", float(N["rbm_pooled"]), "0.85"),
-            ("TOPReward-8B zero-shot, within policy", float(N["topr_within"]), "0.95")]
+    # 1. ArmnetBench: length vs the two reward models, with 95 % CIs
+    f = lambda k: float(N[k])  # noqa: E731
+    rows = [("episode length, pooled", f("len_pooled"), f("len_pooled_lo"), f("len_pooled_hi"), "0.3"),
+            ("episode length, within policy", f("len_within"), f("len_within_lo"), f("len_within_hi"), "0.3"),
+            ("length seen up to 50 % of T, within policy", f("t50_within"), f("t50_lo"), f("t50_hi"), "0.55"),
+            ("Robometer-4B zero-shot, pooled", f("rbm_pooled"), f("rbm_lo"), f("rbm_hi"), "0.85"),
+            ("TOPReward (Qwen3-VL-8B), within policy", f("topr_within"), f("topr_lo"), f("topr_hi"), "0.95")]
     fig, ax = plt.subplots(figsize=(3.3, 1.75))
-    ax.barh(range(5), [r[1] for r in rows], color=[r[2] for r in rows], edgecolor="black", linewidth=0.4)
+    ax.barh(range(5), [r[1] for r in rows], xerr=[[r[1] - r[2] for r in rows], [r[3] - r[1] for r in rows]],
+            color=[r[4] for r in rows], edgecolor="black", linewidth=0.4, error_kw={"elinewidth": 0.6, "capsize": 1.5})
     ax.set_yticks(range(5)); ax.set_yticklabels([r[0] for r in rows], fontsize=6); ax.invert_yaxis(); ax.set_xlim(0.5, 1.0)
     for i, r in enumerate(rows):
-        ax.text(r[1] + 0.005, i, f"{r[1]:.3f}", va="center", fontsize=6)
+        ax.text(r[3] + 0.006, i, f"{r[1]:.3f}", va="center", fontsize=6)
     ax.set_xlabel(f"failure AUROC, n = {N['ab_n']}")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -170,10 +184,11 @@ def figures():
            ("Gemini windows", int(N["tau_caught"]), 1), ("W1 surprise", int(N["w1_l2"]), 2), ("W1 drift", int(N["w1_cos"]), 2),
            ("risk head v2", int(N["r2_log_c"]), int(N["r2_log_fi"])), ("risk MLP v2", int(N["r2_mlp_c"]), int(N["r2_mlp_fi"]))]
     fig, ax = plt.subplots(figsize=(3.3, 2.0))
-    ax.add_patch(matplotlib.patches.Rectangle((-0.5, 5), 2.9, 3.6, color="0.9", zorder=0)); ax.text(0, 8.25, "bar", fontsize=6)
+    ax.add_patch(matplotlib.patches.Rectangle((-0.5, 5), 2.9, 3.6, color="0.9", zorder=0)); ax.text(0, 8.25, "monitor bar", fontsize=6)
     off = {"Gemini windows": (-4, 6), "W1 drift": (4, -9)}
     for lab, f, s in pts:
-        ax.plot(s, f, "o", color="black", ms=3)
+        judge = lab in ("Flora-27B", "Qwen3.5-27B")  # judges at rest, in-sample operating point: not the monitor bar
+        ax.plot(s, f, "s" if judge else "o", color="black", ms=3.5 if judge else 3, mfc="white" if judge else "black")
         ax.annotate(lab, (s, f), xytext=off.get(lab, (3, -2)), textcoords="offset points", fontsize=5.5)
     ax.set_xlabel("successes flagged (of 42)"); ax.set_ylabel("failures caught (of 8)"); ax.set_xlim(-0.5, 16); ax.set_ylim(-0.5, 8.6)
     for s in ("top", "right"):

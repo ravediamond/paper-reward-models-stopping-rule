@@ -63,6 +63,14 @@
   "value": "0.938",
   "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
  },
+ "len_pooled_hi": {
+  "value": "0.951",
+  "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_pooled_lo": {
+  "value": "0.925",
+  "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
  "len_within": {
   "value": "0.942",
   "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
@@ -79,6 +87,10 @@
   "value": "7",
   "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
  },
+ "own_fail": {
+  "value": "25",
+  "anchor": "repro/topreward/expected/own_rollout_labels.csv, operator labels of the 69 rollouts"
+ },
  "own_len": {
   "value": "0.52",
   "anchor": "repro/robometer-judge/expected/g9a_own.json, G9a-own"
@@ -90,6 +102,14 @@
  "own_rbm": {
   "value": "0.577",
   "anchor": "repro/robometer-judge/expected/g9a_own.json, G9a-own"
+ },
+ "own_rbm_pol": {
+  "value": "0.878",
+  "anchor": "repro/robometer-judge/expected/g9a_own.json, G9a-own"
+ },
+ "own_turbo_fail": {
+  "value": "17",
+  "anchor": "repro/topreward/expected/own_rollout_labels.csv, operator labels of the 69 rollouts"
  },
  "q27_f": {
   "value": "7",
@@ -215,6 +235,14 @@
   "value": "69",
   "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
  },
+ "topr_own_nt": {
+  "value": "0.78",
+  "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
+ },
+ "topr_own_nt_n": {
+  "value": "50",
+  "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
+ },
  "topr_own_pol": {
   "value": "0.87",
   "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
@@ -223,8 +251,24 @@
   "value": "0.653",
   "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
  },
+ "topr_pooled_hi": {
+  "value": "0.684",
+  "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
+ },
+ "topr_pooled_lo": {
+  "value": "0.623",
+  "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
+ },
  "topr_within": {
   "value": "0.661",
+  "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
+ },
+ "topr_yn_own": {
+  "value": "0.85",
+  "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
+ },
+ "topr_yn_within": {
+  "value": "0.678",
   "anchor": "repro/topreward/expected/topreward.json, WS-085 TOPReward"
  },
  "w1_cos": {
