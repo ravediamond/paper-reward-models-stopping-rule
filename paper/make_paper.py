@@ -105,7 +105,7 @@ def collect():
     put("own_rbm", o["auroc"], a); put("own_len", o["baseline_length_auroc"], a, "{:.2f}"); put("own_n", o["n_success"] + o["n_failure"], a, "{:d}")
     c3 = J(R / "robometer-judge/expected/g9c3_test_results.json")["result"]; a = "G9c-3, .../judge/results/g9c3/g9c3_test_results.json"
     put("g9c3_acc", 100 * c3["accuracy_on_judged"], a, "{:.1f}"); put("g9c3_fp", c3["false_positives"], a, "{:d}"); put("g9c3_fn", c3["false_negatives"], a, "{:d}")
-        fl = J(R / "flora-input-format/expected/g_flora_summary.json"); a = "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
+    fl = J(R / "flora-input-format/expected/g_flora_summary.json"); a = "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
     put("flora_f", fl["failures_flagged_at_k"], a, "{:d}"); put("flora_s", fl["successes_flagged_at_k"], a, "{:d}"); put("flora_auc", fl["auroc_score"], a, "{:.2f}")
     ab = J(R / "flora-input-format/expected/g_flora_abl_summary.json"); a = "G-flora-abl, .../2026-10-20_g_flora_abl/g_flora_abl_summary.json"
     put("q27_f", ab["qwen27b"]["failures_flagged_at_k"], a, "{:d}"); put("q27_s", ab["qwen27b"]["successes_flagged_at_k"], a, "{:d}")
