@@ -1,6 +1,7 @@
 # make check: every L0 check, then the paper regenerated from repro/*/expected and compared with the committed
 # numbers.json / main.tex / DRAFT_4p.md (any difference fails), then the PDF rebuilt.
 PY ?= python3
+export SOURCE_DATE_EPOCH := 1761955200
 TECTONIC ?= tectonic
 check: l0 paper pdf
 l0:
