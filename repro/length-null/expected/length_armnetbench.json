@@ -1,0 +1,334 @@
+{
+ "n": 2047,
+ "n_success": 515,
+ "n_failure": 1532,
+ "timeout_source": "longest episode of the task (no timeout in the metadata)",
+ "a_pooled": {
+  "auroc": 0.9383045197596898,
+  "ci95": [
+   0.925376553377449,
+   0.9511992976380578
+  ]
+ },
+ "a_within_policy_stratified": {
+  "auroc": 0.9421610169491526,
+  "ci95": [
+   0.9267145327748452,
+   0.9558304469657879
+  ]
+ },
+ "a_per_policy": {
+  "act": {
+   "n": 321,
+   "n_success": 67,
+   "auroc": 0.9405041720531202,
+   "ci95": [
+    0.9009520014162362,
+    0.9755995197981119
+   ]
+  },
+  "diffusion": {
+   "n": 237,
+   "n_success": 53,
+   "auroc": 0.9303732567678425,
+   "ci95": [
+    0.884969301755386,
+    0.9693190096036247
+   ]
+  },
+  "grootn1.7": {
+   "n": 228,
+   "n_success": 83,
+   "auroc": 0.9105941005400914,
+   "ci95": [
+    0.8692256932843301,
+    0.9505570987654322
+   ]
+  },
+  "molmoact2": {
+   "n": 473,
+   "n_success": 71,
+   "auroc": 0.9445378740102305,
+   "ci95": [
+    0.9083483158812538,
+    0.973640788941591
+   ]
+  },
+  "pi0": {
+   "n": 234,
+   "n_success": 87,
+   "auroc": 0.9630932832903276,
+   "ci95": [
+    0.9371625205146398,
+    0.98358394565819
+   ]
+  },
+  "pi0.5": {
+   "n": 235,
+   "n_success": 109,
+   "auroc": 0.9446992864424058,
+   "ci95": [
+    0.9127743132678657,
+    0.9740362901758041
+   ]
+  },
+  "smolvla": {
+   "n": 319,
+   "n_success": 45,
+   "auroc": 0.9545417680454177,
+   "ci95": [
+    0.9003314224884621,
+    0.9912298963020935
+   ]
+  }
+ },
+ "a_per_task": {
+  "Insert the colourful ring into the central wooden peg": {
+   "n": 255,
+   "n_success": 82,
+   "auroc": 0.9652121810235443
+  },
+  "Insert the missing tool into the empty slot on the toolbox": {
+   "n": 257,
+   "n_success": 54,
+   "auroc": 0.855181536216019
+  },
+  "Push the Displayport cable into the cable holder on the white block": {
+   "n": 270,
+   "n_success": 0,
+   "auroc": null
+  },
+  "Put the eye drops into the basket": {
+   "n": 240,
+   "n_success": 120,
+   "auroc": 0.9629513888888889
+  },
+  "Put the eye drops on the shelf": {
+   "n": 299,
+   "n_success": 79,
+   "auroc": 0.9813866513233602
+  },
+  "Remove the power cable from cable holder": {
+   "n": 240,
+   "n_success": 93,
+   "auroc": 0.945907395216151
+  },
+  "Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox": {
+   "n": 231,
+   "n_success": 50,
+   "auroc": 0.9128729281767956
+  },
+  "Stack the colouful blocks on top of each other": {
+   "n": 255,
+   "n_success": 37,
+   "auroc": 0.9032358046119514
+  }
+ },
+ "a_cells_5x5": {
+  "Insert the colourful ring into the central wooden peg | act": {
+   "n": 30,
+   "auroc": 0.9333333333333333
+  },
+  "Insert the colourful ring into the central wooden peg | diffusion": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Insert the colourful ring into the central wooden peg | grootn1.7": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Insert the colourful ring into the central wooden peg | molmoact2": {
+   "n": 60,
+   "auroc": 0.9876543209876543
+  },
+  "Insert the colourful ring into the central wooden peg | pi0": {
+   "n": 30,
+   "auroc": 0.988
+  },
+  "Insert the colourful ring into the central wooden peg | pi0.5": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Insert the colourful ring into the central wooden peg | smolvla": {
+   "n": 45,
+   "auroc": 1.0
+  },
+  "Insert the missing tool into the empty slot on the toolbox | act": {
+   "n": 51,
+   "auroc": 0.6055194805194806
+  },
+  "Insert the missing tool into the empty slot on the toolbox | diffusion": {
+   "n": 27,
+   "auroc": 0.8428571428571429
+  },
+  "Insert the missing tool into the empty slot on the toolbox | grootn1.7": {
+   "n": 20,
+   "auroc": 0.7066666666666667
+  },
+  "Insert the missing tool into the empty slot on the toolbox | molmoact2": {
+   "n": 56,
+   "auroc": 0.9372549019607843
+  },
+  "Insert the missing tool into the empty slot on the toolbox | pi0": {
+   "n": 26,
+   "auroc": 0.8630952380952381
+  },
+  "Insert the missing tool into the empty slot on the toolbox | pi0.5": {
+   "n": 27,
+   "auroc": 0.8181818181818182
+  },
+  "Put the eye drops into the basket | act": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Put the eye drops into the basket | diffusion": {
+   "n": 30,
+   "auroc": 0.9819004524886877
+  },
+  "Put the eye drops into the basket | grootn1.7": {
+   "n": 30,
+   "auroc": 0.915
+  },
+  "Put the eye drops into the basket | molmoact2": {
+   "n": 60,
+   "auroc": 0.9925
+  },
+  "Put the eye drops into the basket | pi0": {
+   "n": 30,
+   "auroc": 0.8386243386243386
+  },
+  "Put the eye drops into the basket | pi0.5": {
+   "n": 30,
+   "auroc": 0.985
+  },
+  "Put the eye drops into the basket | smolvla": {
+   "n": 30,
+   "auroc": 0.9503105590062112
+  },
+  "Put the eye drops on the shelf | diffusion": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Put the eye drops on the shelf | grootn1.7": {
+   "n": 30,
+   "auroc": 0.995475113122172
+  },
+  "Put the eye drops on the shelf | molmoact2": {
+   "n": 60,
+   "auroc": 1.0
+  },
+  "Put the eye drops on the shelf | pi0": {
+   "n": 29,
+   "auroc": 0.9545454545454546
+  },
+  "Put the eye drops on the shelf | pi0.5": {
+   "n": 30,
+   "auroc": 0.9470899470899471
+  },
+  "Remove the power cable from cable holder | act": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Remove the power cable from cable holder | grootn1.7": {
+   "n": 30,
+   "auroc": 0.6175
+  },
+  "Remove the power cable from cable holder | molmoact2": {
+   "n": 60,
+   "auroc": 0.9466484268125855
+  },
+  "Remove the power cable from cable holder | pi0": {
+   "n": 30,
+   "auroc": 0.8928571428571429
+  },
+  "Remove the power cable from cable holder | pi0.5": {
+   "n": 30,
+   "auroc": 0.9761904761904762
+  },
+  "Remove the power cable from cable holder | smolvla": {
+   "n": 30,
+   "auroc": 0.9856459330143541
+  },
+  "Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox | act": {
+   "n": 30,
+   "auroc": 0.9488636363636364
+  },
+  "Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox | diffusion": {
+   "n": 30,
+   "auroc": 0.9425837320574163
+  },
+  "Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox | grootn1.7": {
+   "n": 28,
+   "auroc": 0.827485380116959
+  },
+  "Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox | molmoact2": {
+   "n": 57,
+   "auroc": 0.9950980392156863
+  },
+  "Stack the colouful blocks on top of each other | grootn1.7": {
+   "n": 30,
+   "auroc": 0.7954545454545454
+  },
+  "Stack the colouful blocks on top of each other | pi0": {
+   "n": 30,
+   "auroc": 1.0
+  },
+  "Stack the colouful blocks on top of each other | pi0.5": {
+   "n": 30,
+   "auroc": 1.0
+  }
+ },
+ "b_timeout_share": {
+  "failures_hit": 0.08681462140992167,
+  "successes_hit": 0.001941747572815534
+ },
+ "b_truncated": {
+  "0.25": {
+   "pooled": 0.6095737534538265,
+   "pooled_ci95": [
+    0.5843640937454199,
+    0.6335586101337597
+   ],
+   "within_policy": 0.6170244821092279,
+   "within_policy_ci95": [
+    0.5884151961440122,
+    0.6437710232944903
+   ],
+   "still_running_failures": 0.9862924281984334,
+   "still_running_successes": 0.7300970873786408
+  },
+  "0.5": {
+   "pooled": 0.8380307485614338,
+   "pooled_ci95": [
+    0.8175614813359742,
+    0.8593342042326964
+   ],
+   "within_policy": 0.8509604519774011,
+   "within_policy_ci95": [
+    0.8288410457425673,
+    0.8730908095482164
+   ],
+   "still_running_failures": 0.8798955613577023,
+   "still_running_successes": 0.18640776699029127
+  },
+  "0.75": {
+   "pooled": 0.9267725417627823,
+   "pooled_ci95": [
+    0.9121519533001969,
+    0.9410312185409463
+   ],
+   "within_policy": 0.9308192090395481,
+   "within_policy_ci95": [
+    0.9148238003237036,
+    0.9459097285879653
+   ],
+   "still_running_failures": 0.6122715404699739,
+   "still_running_successes": 0.04660194174757282
+  }
+ },
+ "c_robometer": "not run: per-episode scores not on the Orin (old Mac archive); re-score ~$6 on vast is the owner's call",
+ "reading": {
+  "within_policy_null": true,
+  "more_than_timeout_t050": true
+ }
+}

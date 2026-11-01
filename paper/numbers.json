@@ -1,0 +1,246 @@
+{
+ "ab_fail": {
+  "value": "1,532",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "ab_n": {
+  "value": "2,047",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "ab_ok": {
+  "value": "515",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "flora_auc": {
+  "value": "1.00",
+  "anchor": "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
+ },
+ "flora_f": {
+  "value": "8",
+  "anchor": "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
+ },
+ "flora_s": {
+  "value": "2",
+  "anchor": "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
+ },
+ "flora_s_ci": {
+  "value": "1\u201316 %",
+  "anchor": "Wilson 95 %, results/counts_ci.json"
+ },
+ "g9c3_acc": {
+  "value": "94.3",
+  "anchor": "G9c-3, .../judge/results/g9c3/g9c3_test_results.json"
+ },
+ "g9c3_fn": {
+  "value": "5",
+  "anchor": "G9c-3, .../judge/results/g9c3/g9c3_test_results.json"
+ },
+ "g9c3_fp": {
+  "value": "0",
+  "anchor": "G9c-3, .../judge/results/g9c3/g9c3_test_results.json"
+ },
+ "g9c3_fp_ci": {
+  "value": "0\u201313 %",
+  "anchor": "Wilson 95 %, results/counts_ci.json"
+ },
+ "gem_auc": {
+  "value": "0.96",
+  "anchor": "G-flora-abl, .../2026-10-20_g_flora_abl/g_flora_abl_summary.json"
+ },
+ "hit_fail": {
+  "value": "8.7",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_pol_max": {
+  "value": "0.96",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_pol_min": {
+  "value": "0.91",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_pooled": {
+  "value": "0.938",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_within": {
+  "value": "0.942",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_within_hi": {
+  "value": "0.956",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "len_within_lo": {
+  "value": "0.927",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "n_pol": {
+  "value": "7",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "own_len": {
+  "value": "0.52",
+  "anchor": "G9a-own, .../g9a_own/g9a_own.json"
+ },
+ "own_n": {
+  "value": "88",
+  "anchor": "G9a-own, .../g9a_own/g9a_own.json"
+ },
+ "own_rbm": {
+  "value": "0.577",
+  "anchor": "G9a-own, .../g9a_own/g9a_own.json"
+ },
+ "q27_f": {
+  "value": "7",
+  "anchor": "G-flora-abl, .../2026-10-20_g_flora_abl/g_flora_abl_summary.json"
+ },
+ "q27_s": {
+  "value": "2",
+  "anchor": "G-flora-abl, .../2026-10-20_g_flora_abl/g_flora_abl_summary.json"
+ },
+ "q9_auc": {
+  "value": "0.75",
+  "anchor": "G-flora-abl, .../2026-10-20_g_flora_abl/g_flora_abl_summary.json"
+ },
+ "r1_log_auc": {
+  "value": "0.93",
+  "anchor": "REAP v1, .../reap/expected/monitors.json"
+ },
+ "r2_log_auc": {
+  "value": "0.79",
+  "anchor": "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
+ },
+ "r2_log_c": {
+  "value": "3",
+  "anchor": "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
+ },
+ "r2_log_ci": {
+  "value": "14\u201369 %",
+  "anchor": "Wilson 95 %, results/counts_ci.json"
+ },
+ "r2_log_fi": {
+  "value": "5",
+  "anchor": "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
+ },
+ "r2_mlp_c": {
+  "value": "6",
+  "anchor": "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
+ },
+ "r2_mlp_fi": {
+  "value": "13",
+  "anchor": "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
+ },
+ "r2_sh_auc": {
+  "value": "0.71",
+  "anchor": "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
+ },
+ "rbm_hi": {
+  "value": "0.843",
+  "anchor": "G9a-AB complete, projects/vla-jepa-world-model/robometer/results/g9a_ab/complete.json"
+ },
+ "rbm_lo": {
+  "value": "0.790",
+  "anchor": "G9a-AB complete, projects/vla-jepa-world-model/robometer/results/g9a_ab/complete.json"
+ },
+ "rbm_pooled": {
+  "value": "0.818",
+  "anchor": "G9a-AB complete, projects/vla-jepa-world-model/robometer/results/g9a_ab/complete.json"
+ },
+ "rbm_within": {
+  "value": "0.819",
+  "anchor": "G9a-AB complete, projects/vla-jepa-world-model/robometer/results/g9a_ab/complete.json"
+ },
+ "t50_hi": {
+  "value": "0.873",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "t50_lo": {
+  "value": "0.829",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "t50_run_fail": {
+  "value": "88",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "t50_run_ok": {
+  "value": "19",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "t50_within": {
+  "value": "0.851",
+  "anchor": "WS-077 length analysis, results/length_armnetbench.json (LENGTH_PROTOCOL.md, 1a69f30)"
+ },
+ "tau_caught": {
+  "value": "0",
+  "anchor": "Judge tau, .../2026-10-19_judge_tau/judge_tau.json"
+ },
+ "topr_cap": {
+  "value": "0.667",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_d_hi": {
+  "value": "-0.25",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_d_lo": {
+  "value": "-0.31",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_hi": {
+  "value": "0.692",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_lo": {
+  "value": "0.631",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_own": {
+  "value": "0.82",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_own_hi": {
+  "value": "0.93",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_own_len": {
+  "value": "0.56",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_own_lo": {
+  "value": "0.70",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_own_n": {
+  "value": "69",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_own_pol": {
+  "value": "0.87",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_pooled": {
+  "value": "0.653",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "topr_within": {
+  "value": "0.661",
+  "anchor": "WS-085 TOPReward, results/topreward.json (topreward/TOPREWARD_PROTOCOL.md, 6241570)"
+ },
+ "w1_cos": {
+  "value": "0",
+  "anchor": "W1-A, .../2026-10-19_w1_screening/w1a_summary.json"
+ },
+ "w1_l2": {
+  "value": "2",
+  "anchor": "W1-A, .../2026-10-19_w1_screening/w1a_summary.json"
+ },
+ "w1_l2_auc": {
+  "value": "0.86",
+  "anchor": "W1-A, .../2026-10-19_w1_screening/w1a_summary.json"
+ },
+ "w1_l2_ci": {
+  "value": "7\u201359 %",
+  "anchor": "Wilson 95 %, results/counts_ci.json"
+ }
+}
