@@ -33,8 +33,10 @@ TPL = r"""\documentclass[10pt,twocolumn]{article}
 % WS-077: rendered by make_paper.py from main.src.tex (do not edit main.tex; main.src.tex comes from md2tex.py).
 \usepackage[margin=0.75in]{geometry}
 \usepackage{graphicx,amssymb,hyperref}
+\usepackage{style/shisso}
+\shissorepo{github.com/ravediamond/paper-reward-models-stopping-rule}
 \title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}
-\author{Ravindu Somawansa\\Shisso Robotics}
+\author{Ravindu Somawansa\\Shisso Robotics\\\texttt{ravindu.somawansa@gmail.com}}
 \date{}
 \begin{document}
 \maketitle

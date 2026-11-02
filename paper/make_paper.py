@@ -9,6 +9,7 @@ DRAFT_4p.md and main.src.tex -> main.tex by {{key}} placeholders; a placeholder 
 import json
 import os
 import re
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -148,18 +149,18 @@ def figures():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    FIG.mkdir(exist_ok=True); plt.rcParams.update({"font.size": 8, "figure.dpi": 150})
+    FIG.mkdir(exist_ok=True); sys.path.insert(0, str(HERE / "style")); import shisso_colors as sc; sc.use()
     L = J(R / "length-null/expected/length_armnetbench.json")
     # 1. ArmnetBench: length vs the two reward models, with 95 % CIs
     f = lambda k: float(N[k])  # noqa: E731
-    rows = [("episode length, pooled", f("len_pooled"), f("len_pooled_lo"), f("len_pooled_hi"), "0.3"),
-            ("episode length, within policy", f("len_within"), f("len_within_lo"), f("len_within_hi"), "0.3"),
-            ("length seen up to 50 % of T, within policy", f("t50_within"), f("t50_lo"), f("t50_hi"), "0.55"),
-            ("Robometer-4B zero-shot, pooled", f("rbm_pooled"), f("rbm_lo"), f("rbm_hi"), "0.85"),
-            ("TOPReward (Qwen3-VL-8B), within policy", f("topr_within"), f("topr_lo"), f("topr_hi"), "0.95")]
+    rows = [("episode length, pooled", f("len_pooled"), f("len_pooled_lo"), f("len_pooled_hi"), sc.GREY),
+            ("episode length, within policy", f("len_within"), f("len_within_lo"), f("len_within_hi"), sc.GREY),
+            ("length seen up to 50 % of T, within policy", f("t50_within"), f("t50_lo"), f("t50_hi"), sc.CATEGORICAL[2]),
+            ("Robometer-4B zero-shot, pooled", f("rbm_pooled"), f("rbm_lo"), f("rbm_hi"), sc.CATEGORICAL[1]),
+            ("TOPReward (Qwen3-VL-8B), within policy", f("topr_within"), f("topr_lo"), f("topr_hi"), sc.ACCENT)]
     fig, ax = plt.subplots(figsize=(3.3, 1.75))
     ax.barh(range(5), [r[1] for r in rows], xerr=[[r[1] - r[2] for r in rows], [r[3] - r[1] for r in rows]],
-            color=[r[4] for r in rows], edgecolor="black", linewidth=0.4, error_kw={"elinewidth": 0.6, "capsize": 1.5})
+            color=[r[4] for r in rows], linewidth=0, error_kw={"elinewidth": 0.6, "capsize": 1.5})
     ax.set_yticks(range(5)); ax.set_yticklabels([r[0] for r in rows], fontsize=6); ax.invert_yaxis(); ax.set_xlim(0.5, 1.0)
     for i, r in enumerate(rows):
         ax.text(r[3] + 0.006, i, f"{r[1]:.3f}", va="center", fontsize=6)
@@ -172,9 +173,9 @@ def figures():
     fig, ax = plt.subplots(figsize=(3.3, 1.6))
     y = [L["b_truncated"][t]["within_policy"] for t in ts]; lo = [L["b_truncated"][t]["within_policy_ci95"][0] for t in ts]
     hi = [L["b_truncated"][t]["within_policy_ci95"][1] for t in ts]
-    ax.plot(x + [100], y + [float(N["len_within"])], marker="o", color="black", lw=1)
-    ax.fill_between(x, lo, hi, color="0.8")
-    ax.axhline(0.60, ls="--", lw=0.8, color="black"); ax.text(27, 0.615, "reading rule 0.60", fontsize=6)
+    ax.plot(x + [100], y + [float(N["len_within"])], marker="o", ms=3, color=sc.ACCENT, lw=1.2)
+    sc.band(ax, x, lo, hi)
+    sc.bar_line(ax, 0.60); ax.text(27, 0.615, "reading rule 0.60", fontsize=6)
     ax.set_xlabel("length seen up to (% of longest episode)"); ax.set_ylabel("AUROC within policy"); ax.set_ylim(0.5, 1.0)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -184,11 +185,11 @@ def figures():
            ("Gemini windows", int(N["tau_caught"]), 1), ("W1 surprise", int(N["w1_l2"]), 2), ("W1 drift", int(N["w1_cos"]), 2),
            ("risk head v2", int(N["r2_log_c"]), int(N["r2_log_fi"])), ("risk MLP v2", int(N["r2_mlp_c"]), int(N["r2_mlp_fi"]))]
     fig, ax = plt.subplots(figsize=(3.3, 2.0))
-    ax.add_patch(matplotlib.patches.Rectangle((-0.5, 5), 2.9, 3.6, color="0.9", zorder=0)); ax.text(0, 8.25, "monitor bar", fontsize=6)
+    ax.add_patch(matplotlib.patches.Rectangle((-0.5, 5), 2.9, 3.6, color=sc.GREY, alpha=0.2, lw=0, zorder=0)); ax.text(0, 8.25, "monitor bar", fontsize=6)
     off = {"Gemini windows": (-4, 6), "W1 drift": (4, -9)}
     for lab, f, s in pts:
         judge = lab in ("Flora-27B", "Qwen3.5-27B")  # judges at rest, in-sample operating point: not the monitor bar
-        ax.plot(s, f, "s" if judge else "o", color="black", ms=3.5 if judge else 3, mfc="white" if judge else "black")
+        ax.plot(s, f, "s" if judge else "o", color=sc.ACCENT, ms=3.5 if judge else 3, mfc="white" if judge else sc.ACCENT)
         ax.annotate(lab, (s, f), xytext=off.get(lab, (3, -2)), textcoords="offset points", fontsize=5.5)
     ax.set_xlabel("successes flagged (of 42)"); ax.set_ylabel("failures caught (of 8)"); ax.set_xlim(-0.5, 16); ax.set_ylim(-0.5, 8.6)
     for s in ("top", "right"):
