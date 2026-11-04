@@ -13,26 +13,26 @@
 \begin{abstract}
 Reward models that score robot rollouts are also used as failure detectors, and the baseline they must beat depends
 on who stopped the episode. On {{ab_n}} public SO-101 rollouts from {{n_pol}} policies, where runs end at a time
-limit, plain episode length separates failure from success at AUROC {{len_within}} within policy --- and still
-{{t50_within}} when only half of the longest run has been observed: failed runs are slow, not timed out. Both
-zero-shot reward models we test score below that baseline (the best reaches {{rbm_within}} within policy). On our own
-operator-stopped rollouts the regime flips: length falls to {{topr_own_len}}, neither reward model beats the
-policy-identity null, and what works is a judge at rest --- a robot-trained 27B judge passes its pre-registered bar,
-though its operating threshold is in-sample, and every mid-episode monitor we tested misses the bar. We recommend
-reporting a length baseline, within policy, and the dataset's stopping rule.
+limit, plain episode length separates failure from success at AUROC {{len_within}} within policy. Half the run is
+enough: observed only up to half of the longest episode, length still gives {{t50_within}}. Failed runs are slow, not
+timed out. Both zero-shot reward models we test score below that baseline (the best reaches {{rbm_within}} within
+policy). On our own operator-stopped rollouts the regime flips. Length falls to {{topr_own_len}}, neither reward
+model beats the policy-identity null, and what works is a judge at rest: a robot-trained 27B judge passes its
+pre-registered bar, though its operating threshold is in-sample, and every mid-episode monitor we tested misses the
+bar. We recommend reporting a length baseline, within policy, and naming the dataset's stopping rule.
 \end{abstract}
 \section{Introduction}
 A reward model that scores robot rollouts is also a failure detector, and papers evaluate it as one. Any such
 evaluation has a hidden variable: the dataset's \emph{stopping rule} --- who decides that an episode is over. When a
-benchmark stops failed runs at a time limit, how long an episode ran encodes its outcome, and a detector should be
+benchmark stops failed runs at a time limit, how long an episode ran encodes its outcome. A detector should then be
 read against the baselines the stopping rule hands out for free: elapsed length, and the identity of the policy that
 ran. When an operator stops each run by judgment, those baselines collapse, and the task changes. None of the
 reward-model papers in our library reports how far plain episode length gets on the same data. We measure it on a
 public SO-101 benchmark \citep{armnetbench} and on our own rollouts, with the length analyses frozen before the numbers,
-and set every learned judge and monitor we ran against it. Contributions: (i) a pre-registered length analysis of
-{{ab_n}} public rollouts, pooled, within policy and truncated in time; (ii) the same analysis for two zero-shot
-reward models \citep{robometer,topreward}, with the stopping-rule baselines beside them; (iii) judge and monitor gates
-on {{own_n}} operator-stopped rollouts of our own, with every in-sample threshold disclosed.
+and set every learned judge and monitor we ran against it. Three things follow. First, a pre-registered length
+analysis of {{ab_n}} public rollouts: pooled, within policy, and truncated in time. Second, the same analysis for two
+zero-shot reward models \citep{robometer,topreward}, with the stopping-rule baselines beside them. Third, judge and
+monitor gates on {{own_n}} operator-stopped rollouts of our own, every in-sample threshold disclosed.
 
 \section{Data and labels}
 ArmnetBench v0.1 \citep{armnetbench} (SO-101, 8 tasks, {{n_pol}} policies): {{ab_n}} policy rollouts with a success or
