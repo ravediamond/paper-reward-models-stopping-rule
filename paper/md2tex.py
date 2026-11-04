@@ -23,9 +23,15 @@ def esc(x):
     return re.sub(r"\{\{([^}]*)\}\}", lambda m: "{{" + m.group(1).replace(r"\_", "_") + "}}", x)
 
 
+RP = r">{\raggedright\arraybackslash}p"  # ragged cells: long file names must not overflow the column
 COLSPEC = {3: ("table", r"p{3.0cm}p{2.4cm}p{2.6cm}"),
            6: ("table*", r"p{3.0cm}p{1.1cm}p{3.2cm}p{1.3cm}p{1.4cm}p{2.3cm}"),
-           4: ("table", r"p{2.5cm}p{1.5cm}p{2.2cm}p{1.4cm}")}
+           4: ("table", RP + "{1.95cm}" + RP + "{1.4cm}" + RP + "{2.35cm}" + RP + "{1.4cm}")}
+
+
+def brk(c):
+    """Let file names and paths break inside a table cell (not in placeholders, which are filled later)."""
+    return c if "{{" in c else c.replace(r"\_", r"\_\allowbreak{}").replace("/", "/\\allowbreak{}")
 
 
 def table(rows, caption, wide_pos="t"):
@@ -34,7 +40,7 @@ def table(rows, caption, wide_pos="t"):
            "\\setlength{\\tabcolsep}{3pt}\\renewcommand{\\arraystretch}{1.1}",
            "\\begin{tabular}{" + spec + "}", "\\toprule",
            "\\shissohead " + " & ".join(rows[0]) + r" \\", "\\midrule"]
-    out += [" & ".join(r) + r" \\" for r in rows[1:]]
+    out += [" & ".join(brk(c) for c in r) + r" \\" for r in rows[1:]]
     out += ["\\bottomrule", "\\end{tabular}"]
     if caption:
         out.append("\\caption{" + caption + "}")
@@ -88,7 +94,7 @@ TPL = r"""\documentclass[10pt,twocolumn]{article}
 \usepackage{style/shisso}
 \shissorepo{github.com/ravediamond/paper-reward-models-stopping-rule}
 \title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}
-\author{Ravindu Somawansa\\Shisso Robotics, Paris\\\texttt{ravindu.somawansa@gmail.com}\thanks{Every number with its source file, and every bar commit named here, is in \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}.}}
+\author{Ravindu Somawansa\\Shisso Robotics, Paris\\\texttt{ravindu.somawansa@gmail.com}\thanks{Code, result files and the checks that regenerate every number: \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}. The frozen protocols are copied verbatim under \texttt{repro/}; the bar commits named in the paper belong to the authors' research repository \texttt{ravediamond/road-to-robotics}.}}
 \date{}
 \begin{document}
 \maketitle

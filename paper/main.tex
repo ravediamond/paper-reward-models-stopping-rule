@@ -6,7 +6,7 @@
 \usepackage{style/shisso}
 \shissorepo{github.com/ravediamond/paper-reward-models-stopping-rule}
 \title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}
-\author{Ravindu Somawansa\\Shisso Robotics, Paris\\\texttt{ravindu.somawansa@gmail.com}\thanks{Every number with its source file, and every bar commit named here, is in \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}.}}
+\author{Ravindu Somawansa\\Shisso Robotics, Paris\\\texttt{ravindu.somawansa@gmail.com}\thanks{Code, result files and the checks that regenerate every number: \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}. The frozen protocols are copied verbatim under \texttt{repro/}; the bar commits named in the paper belong to the authors' research repository \texttt{ravediamond/road-to-robotics}.}}
 \date{}
 \begin{document}
 \maketitle
@@ -66,7 +66,7 @@ length seen up to 50 \% of the longest run & --- & 0.851 (0.829--0.873) \\
 Robometer-4B, success probability & 0.818 (0.790--0.843) & 0.821 (per-policy 0.79--0.87) \\
 Robometer-4B, last progress (descriptive) & 0.838 (no CI) & --- \\
 TOPReward, success score & 0.653 (0.623--0.684) & 0.661 (0.631--0.692) \\
-TOPReward, Yes/No component (descriptive) & --- & 0.678 \\
+TOPReward, Yes/\allowbreak{}No component (descriptive) & --- & 0.678 \\
 \bottomrule
 \end{tabular}
 \caption{ArmnetBench, failure AUROC with 95 \% episode-bootstrap CIs. The Robometer within-policy entry is pair-weighted over its per-policy block and carries the per-policy range instead of a CI (per-episode scores not stored); the last-progress entry is descriptive (the protocol's primary score was the success probability).}
@@ -173,18 +173,18 @@ Every number is recomputable from the repository; this table maps each analysis 
 
 \begin{table}[t]\centering\scriptsize
 \setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.1}
-\begin{tabular}{p{2.5cm}p{1.5cm}p{2.2cm}p{1.4cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{1.95cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{2.35cm}>{\raggedright\arraybackslash}p{1.4cm}}
 \toprule
 \shissohead analysis & repro folder & expected files & protocol \\
 \midrule
-length baseline, truncation & repro/length-null & length\_armnetbench.json, counts\_ci.json & LENGTH\_PROTOCOL.md, frozen \texttt{1a69f30} \\
-Robometer on ArmnetBench & repro/robometer-judge & g9a\_ab\_complete.json & PROTOCOL.md (primary score fixed there) \\
-Robometer and length on own rollouts & repro/robometer-judge & g9a\_own.json & PROTOCOL.md \\
-colour judge & repro/robometer-judge & g9c3\_test\_results.json & PROTOCOL.md \\
-TOPReward, both datasets & repro/topreward & topreward.json, own\_rollout\_labels.csv & TOPREWARD\_PROTOCOL.md, \texttt{6241570} \\
-judges at rest, input-format gate & repro/flora-input-format & g\_flora\_summary.json, g\_flora\_abl\_summary.json & PROTOCOL.md \\
-window judge, world-model monitors & repro/six-monitors & judge\_tau.json, w1a\_summary.json & PROTOCOL.md \\
-action-conditioned risk head & repro/reap & monitors.json, monitors\_v2.json & PROTOCOL.md \\
+length baseline, truncation & repro/\allowbreak{}length-null & length\_\allowbreak{}armnetbench.json, counts\_\allowbreak{}ci.json & LENGTH\_\allowbreak{}PROTOCOL.md, frozen \texttt{1a69f30} \\
+Robometer on ArmnetBench & repro/\allowbreak{}robometer-judge & g9a\_\allowbreak{}ab\_\allowbreak{}complete.json & PROTOCOL.md (primary score fixed there) \\
+Robometer and length on own rollouts & repro/\allowbreak{}robometer-judge & g9a\_\allowbreak{}own.json & PROTOCOL.md \\
+colour judge & repro/\allowbreak{}robometer-judge & g9c3\_\allowbreak{}test\_\allowbreak{}results.json & PROTOCOL.md \\
+TOPReward, both datasets & repro/\allowbreak{}topreward & topreward.json, own\_\allowbreak{}rollout\_\allowbreak{}labels.csv & TOPREWARD\_\allowbreak{}PROTOCOL.md, \texttt{6241570} \\
+judges at rest, input-format gate & repro/\allowbreak{}flora-input-format & g\_\allowbreak{}flora\_\allowbreak{}summary.json, g\_\allowbreak{}flora\_\allowbreak{}abl\_\allowbreak{}summary.json & PROTOCOL.md \\
+window judge, world-model monitors & repro/\allowbreak{}six-monitors & judge\_\allowbreak{}tau.json, w1a\_\allowbreak{}summary.json & PROTOCOL.md \\
+action-conditioned risk head & repro/\allowbreak{}reap & monitors.json, monitors\_\allowbreak{}v2.json & PROTOCOL.md \\
 \bottomrule
 \end{tabular}
 \end{table}
