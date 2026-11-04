@@ -11,12 +11,24 @@
   "value": "515",
   "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
  },
+ "dp_n": {
+  "value": "270",
+  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: per_task row with auroc null (the Displayport-cable task, one class only)"
+ },
  "flora_auc": {
   "value": "1.00",
   "anchor": "repro/flora-input-format/expected/g_flora_summary.json, G-flora"
  },
  "flora_f": {
   "value": "8",
+  "anchor": "repro/flora-input-format/expected/g_flora_summary.json, G-flora"
+ },
+ "flora_hi": {
+  "value": "1.00",
+  "anchor": "repro/flora-input-format/expected/g_flora_summary.json, G-flora"
+ },
+ "flora_lo": {
+  "value": "1.00",
   "anchor": "repro/flora-input-format/expected/g_flora_summary.json, G-flora"
  },
  "flora_s": {
@@ -46,6 +58,14 @@
  "gem_auc": {
   "value": "0.96",
   "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl"
+ },
+ "gem_f": {
+  "value": "8",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl, gemini38flash flags_by_k (k-invariant)"
+ },
+ "gem_s": {
+  "value": "3",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl, gemini38flash flags_by_k (k-invariant)"
  },
  "hit_fail": {
   "value": "8.7",
@@ -111,8 +131,20 @@
   "value": "17",
   "anchor": "repro/topreward/expected/own_rollout_labels.csv, operator labels of the 69 rollouts"
  },
+ "q27_auc": {
+  "value": "0.91",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl"
+ },
  "q27_f": {
   "value": "7",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl"
+ },
+ "q27_hi": {
+  "value": "1.00",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl"
+ },
+ "q27_lo": {
+  "value": "0.78",
   "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl"
  },
  "q27_s": {
@@ -122,6 +154,14 @@
  "q9_auc": {
   "value": "0.75",
   "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl"
+ },
+ "q9_f": {
+  "value": "7",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl, qwen9b flags_by_k (k-invariant)"
+ },
+ "q9_s": {
+  "value": "16",
+  "anchor": "repro/flora-input-format/expected/g_flora_abl_summary.json, G-flora-abl, qwen9b flags_by_k (k-invariant)"
  },
  "r1_log_auc": {
   "value": "0.93",
@@ -167,9 +207,21 @@
   "value": "0.818",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete"
  },
+ "rbm_prog": {
+  "value": "0.838",
+  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: baselines.last_progress_auroc"
+ },
  "rbm_within": {
-  "value": "0.819",
-  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete"
+  "value": "0.821",
+  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: within_policy block, pair-weighted by n_success x n_failure (checked by l0_check.py)"
+ },
+ "rbm_within_max": {
+  "value": "0.87",
+  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: within_policy block, max per-policy AUROC"
+ },
+ "rbm_within_min": {
+  "value": "0.79",
+  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: within_policy block, min per-policy AUROC"
  },
  "t50_hi": {
   "value": "0.873",
@@ -194,6 +246,10 @@
  "tau_caught": {
   "value": "0",
   "anchor": "repro/six-monitors/expected/judge_tau.json, judge tau"
+ },
+ "tau_fi": {
+  "value": "1",
+  "anchor": "repro/six-monitors/expected/judge_tau.json, judge tau, false_intervention_rate x success_episodes"
  },
  "topr_cap": {
   "value": "0.667",
@@ -275,6 +331,14 @@
   "value": "0",
   "anchor": "repro/six-monitors/expected/w1a_summary.json, W1-A"
  },
+ "w1_cos_auc": {
+  "value": "0.30",
+  "anchor": "repro/six-monitors/expected/w1a_summary.json, W1-A"
+ },
+ "w1_cos_fi": {
+  "value": "2",
+  "anchor": "repro/six-monitors/expected/w1a_summary.json, W1-A, cos false_intervention_rate x success_episodes"
+ },
  "w1_l2": {
   "value": "2",
   "anchor": "repro/six-monitors/expected/w1a_summary.json, W1-A"
@@ -286,5 +350,9 @@
  "w1_l2_ci": {
   "value": "7\u201359 %",
   "anchor": "repro/length-null/expected/counts_ci.json, Wilson 95 %"
+ },
+ "w1_l2_fi": {
+  "value": "2",
+  "anchor": "repro/six-monitors/expected/w1a_summary.json, W1-A, l2 false_intervention_rate x success_episodes"
  }
 }

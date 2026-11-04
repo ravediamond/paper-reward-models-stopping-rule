@@ -1,42 +1,94 @@
 #!/usr/bin/env python3
-"""DRAFT_4p.src.md -> main.src.tex (same text, placeholders kept); run before make_paper.py when the markdown changes."""
+"""DRAFT_4p.src.md -> main.src.tex (same text, placeholders kept); run before make_paper.py when the markdown changes.
+Generic: headings, paragraphs, pipe tables (booktabs; a preceding "Table N: ..." line is the caption), figures from
+image lines (the .pdf twin of the .png), [@key] / [@k1; @k2] -> \\citep; the References section becomes
+\\bibliography{refs}; an "## Appendix: ..." section lands after the bibliography."""
 import re
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 md = (HERE / "DRAFT_4p.src.md").read_text()
 
+SUB = [("&", r"\&"), ("%", r"\%"), ("#", r"\#"), ("_", r"\_"), ("≥", r"$\geq$"), ("≤", r"$\leq$"),
+       ("×", r"$\times$"), ("°", r"$^\circ$"), ("τ", r"$\tau$"), ("—", "---"), ("–", "--"), ("±", r"$\pm$")]
 
-def sec(title):
-    return re.search(r"## " + re.escape(title) + r"\n\n(.*?)(?=\n## |\Z)", md, re.S).group(1).strip()
 
-
-def tex(x):
-    x = re.sub(r"!\[.*?\]\(.*?\)\n?", "", x)
-    x = x.replace("%", "\\%").replace("&", "\\&").replace("#", "\\#").replace("_", "\\_")
-    x = re.sub(r"\*\*(.+?)\*\*", r"\\textbf{\1}", x, flags=re.S); x = re.sub(r"\*(.+?)\*", r"\\emph{\1}", x)
-    x = re.sub(r"`(.+?)`", r"\\texttt{\1}", x)
-    for a, b in (("≥", "$\\geq$"), ("≤", "$\\leq$"), ("×", "$\\times$"), ("°", "$^\\circ$"), ("–", "--"), ("—", "---"), ("τ", "$\\tau$")):
+def esc(x):
+    for a, b in SUB:
         x = x.replace(a, b)
-    return re.sub(r"\{\{([^}]*)\}\}", lambda m: "{{" + m.group(1).replace("\\_", "_") + "}}", x)
+    x = re.sub(r"\[@([^\]]+)\]", lambda m: r"\citep{" + ",".join(k.strip().lstrip("@") for k in m.group(1).split(";")) + "}", x)
+    x = re.sub(r"\*\*(.+?)\*\*", r"\\textbf{\1}", x, flags=re.S)
+    x = re.sub(r"(?<!\*)\*([^*\n]+)\*", r"\\emph{\1}", x)
+    x = re.sub(r"`(.+?)`", r"\\texttt{\1}", x)
+    return re.sub(r"\{\{([^}]*)\}\}", lambda m: "{{" + m.group(1).replace(r"\_", "_") + "}}", x)
 
 
-FIGS = {"3 The length baseline": ("armnetbench", "Failure AUROC on ArmnetBench (95 \\% CIs): episode length vs two zero-shot reward models (Robometer-4B, TOPReward with Qwen3-VL-8B)."),
-        "4 Is it the timeout?": ("truncation", "Length observed up to a fraction of the task's longest episode, AUROC within policy (band: 95 \\% CI)."),
-        "5 Judges and monitors on our rollouts": ("own_monitors", "Fifty own rollouts: failures caught (of 8) vs successes flagged (of 42). Circles: mid-episode monitors; shaded: their bar ($\\geq$ 5/8 at $\\leq$ 1/20). Squares: judges at rest (one score per finished episode) at their in-sample G-flora operating point; the monitor bar does not apply to them.")}
-body = ""
-for t in ("1 Introduction", "2 Data and labels", "3 The length baseline", "4 Is it the timeout?", "5 Judges and monitors on our rollouts", "6 Limitations"):
-    body += "\\section{" + t.split(" ", 1)[1] + "}\n" + tex(sec(t)) + "\n\n"
-    if t in FIGS:
-        body += "\\begin{figure}[t]\\centering\\includegraphics[width=\\columnwidth]{fig/%s.pdf}\\caption{%s}\\end{figure}\n\n" % FIGS[t]
+COLSPEC = {3: ("table", r"p{3.0cm}p{2.4cm}p{2.6cm}"),
+           6: ("table*", r"p{3.0cm}p{1.1cm}p{3.2cm}p{1.3cm}p{1.4cm}p{2.3cm}"),
+           4: ("table", r"p{2.5cm}p{1.5cm}p{2.2cm}p{1.4cm}")}
+
+
+def table(rows, caption, wide_pos="t"):
+    env, spec = COLSPEC[len(rows[0])]
+    out = ["\\begin{%s}[%s]\\centering\\scriptsize" % (env, wide_pos),
+           "\\setlength{\\tabcolsep}{3pt}\\renewcommand{\\arraystretch}{1.1}",
+           "\\begin{tabular}{" + spec + "}", "\\toprule",
+           "\\shissohead " + " & ".join(rows[0]) + r" \\", "\\midrule"]
+    out += [" & ".join(r) + r" \\" for r in rows[1:]]
+    out += ["\\bottomrule", "\\end{tabular}"]
+    if caption:
+        out.append("\\caption{" + caption + "}")
+    out.append("\\end{%s}" % env)
+    return "\n".join(out) + "\n\n"
+
+
+def convert(block_lines):
+    out, cap, i = "", "", 0
+    while i < len(block_lines):
+        l = block_lines[i]
+        if re.match(r"Table \d+: ", l):
+            cap = esc(l.split(": ", 1)[1])
+        elif l.startswith("|"):
+            rows = []
+            while i < len(block_lines) and block_lines[i].startswith("|"):
+                if not set(block_lines[i]) <= set("|-: "):
+                    rows.append([esc(c.strip()) for c in block_lines[i].strip("|").split("|")])
+                i += 1
+            out += table(rows, cap); cap = ""
+            continue
+        elif m := re.match(r"!\[(.*)\]\((.*)\)", l):
+            out += ("\\begin{figure}[t]\\centering\\includegraphics[width=\\columnwidth]{%s}\\caption{%s}\\end{figure}\n\n"
+                    % (m.group(2).replace(".png", ".pdf"), esc(m.group(1))))
+        else:
+            out += esc(l) + "\n"
+        i += 1
+    return out
+
+
+secs = re.split(r"^## ", md, flags=re.M)
+abstract, body, appendix = "", "", ""
+for s in secs[1:]:
+    title, _, rest = s.partition("\n")
+    lines = rest.strip("\n").split("\n")
+    if title == "Abstract":
+        abstract = convert(lines)
+    elif title.startswith("References"):
+        continue
+    elif title.startswith("Appendix"):
+        appendix = "\\appendix\n\\section*{" + esc(title) + "}\n" + convert(lines)
+    else:
+        name = title.split(" ", 1)[1] if title.split(" ", 1)[0].isdigit() else title
+        body += "\\section{" + esc(name) + "}\n" + convert(lines) + "\n"
+
 TPL = r"""\documentclass[10pt,twocolumn]{article}
-% WS-077: rendered by make_paper.py from main.src.tex (do not edit main.tex; main.src.tex comes from md2tex.py).
+% Rendered by make_paper.py from main.src.tex (do not edit main.tex; main.src.tex comes from md2tex.py).
 \usepackage[margin=0.75in]{geometry}
-\usepackage{graphicx,amssymb,hyperref}
+\usepackage{graphicx,amssymb,hyperref,booktabs}
+\usepackage[numbers]{natbib}
 \usepackage{style/shisso}
 \shissorepo{github.com/ravediamond/paper-reward-models-stopping-rule}
 \title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}
-\author{Ravindu Somawansa\\Shisso Robotics\\\texttt{ravindu.somawansa@gmail.com}}
+\author{Ravindu Somawansa\\Shisso Robotics, Paris\\\texttt{ravindu.somawansa@gmail.com}\thanks{Every number with its source file, and every bar commit named here, is in \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}.}}
 \date{}
 \begin{document}
 \maketitle
@@ -44,10 +96,12 @@ TPL = r"""\documentclass[10pt,twocolumn]{article}
 ABSTRACT
 \end{abstract}
 BODY
-\section*{References}
-REFS
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+APPENDIX
 \end{document}
 """
-(HERE / "main.src.tex").write_text(TPL.replace("ABSTRACT", tex(sec("Abstract"))).replace("BODY", body)
-                                   .replace("REFS", tex(sec("References (ids from the papers mirror)"))))
+(HERE / "main.src.tex").write_text(TPL.replace("ABSTRACT", abstract.strip())
+                                   .replace("BODY", body.strip()).replace("APPENDIX", appendix.strip()) + "")
 print("main.src.tex written")

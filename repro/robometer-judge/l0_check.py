@@ -21,6 +21,10 @@ def J(name):
 c = J("g9a_ab_complete.json")["complete"]
 check("Robometer pooled AUROC, complete set", c["pooled_auroc"], 0.818, 0.0005)
 check("rollouts scored", c["n_scored"], 2099, 0)
+wp = c["within_policy"]
+W = sum(v["n_success"] * v["n_failure"] for v in wp.values())
+check("Robometer within policy, pair-weighted over the per-policy block", sum(v["auroc"] * v["n_success"] * v["n_failure"] for v in wp.values()) / W, 0.8206, 0.0005)
+check("Robometer last-progress baseline, pooled", c["baselines"]["last_progress_auroc"], 0.8383, 0.0005)
 
 print("L0", "PASS" if fails == 0 else f"FAIL ({fails})")
 sys.exit(1 if fails else 0)

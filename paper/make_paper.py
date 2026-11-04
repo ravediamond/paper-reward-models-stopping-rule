@@ -102,7 +102,15 @@ def collect():
     g = J(R / "robometer-judge/expected/g9a_ab_complete.json")["complete"]
     a = "G9a-AB complete, projects/vla-jepa-world-model/robometer/results/g9a_ab/complete.json"
     put("rbm_pooled", g["pooled_auroc"], a); put("rbm_lo", g["pooled_ci95"][0], a); put("rbm_hi", g["pooled_ci95"][1], a)
-    put("rbm_within", g["within_policy_mean"], a)
+    wp = g["within_policy"]
+    W = sum(v["n_success"] * v["n_failure"] for v in wp.values())
+    put("rbm_within", sum(v["auroc"] * v["n_success"] * v["n_failure"] for v in wp.values()) / W,
+        a + ": within_policy block, pair-weighted by n_success x n_failure (checked by l0_check.py)")
+    put("rbm_within_min", min(v["auroc"] for v in wp.values()), a + ": within_policy block, min per-policy AUROC", "{:.2f}")
+    put("rbm_within_max", max(v["auroc"] for v in wp.values()), a + ": within_policy block, max per-policy AUROC", "{:.2f}")
+    put("rbm_prog", g["baselines"]["last_progress_auroc"], a + ": baselines.last_progress_auroc")
+    dp = next(v for k, v in g["per_task"].items() if v["auroc"] is None)
+    put("dp_n", dp["n"], a + ": per_task row with auroc null (the Displayport-cable task, one class only)", "{:d}")
     o = J(R / "robometer-judge/expected/g9a_own.json")["A"]; a = "G9a-own, .../g9a_own/g9a_own.json"
     put("own_rbm", o["auroc"], a); put("own_len", o["baseline_length_auroc"], a, "{:.2f}"); put("own_n", o["n_success"] + o["n_failure"], a, "{:d}")
     put("own_rbm_pol", o["baseline_policy_identity_auroc"], a)
@@ -110,13 +118,24 @@ def collect():
     put("g9c3_acc", 100 * c3["accuracy_on_judged"], a, "{:.1f}"); put("g9c3_fp", c3["false_positives"], a, "{:d}"); put("g9c3_fn", c3["false_negatives"], a, "{:d}")
     fl = J(R / "flora-input-format/expected/g_flora_summary.json"); a = "G-flora, shared/gate/data/2026-10-20_g_flora/g_flora_summary.json"
     put("flora_f", fl["failures_flagged_at_k"], a, "{:d}"); put("flora_s", fl["successes_flagged_at_k"], a, "{:d}"); put("flora_auc", fl["auroc_score"], a, "{:.2f}")
+    put("flora_lo", fl["auroc_score_ci95"][0], a, "{:.2f}"); put("flora_hi", fl["auroc_score_ci95"][1], a, "{:.2f}")
     ab = J(R / "flora-input-format/expected/g_flora_abl_summary.json"); a = "G-flora-abl, .../2026-10-20_g_flora_abl/g_flora_abl_summary.json"
     put("q27_f", ab["qwen27b"]["failures_flagged_at_k"], a, "{:d}"); put("q27_s", ab["qwen27b"]["successes_flagged_at_k"], a, "{:d}")
+    put("q27_auc", ab["qwen27b"]["auroc_score"], a, "{:.2f}")
+    put("q27_lo", ab["qwen27b"]["auroc_score_ci95"][0], a, "{:.2f}"); put("q27_hi", ab["qwen27b"]["auroc_score_ci95"][1], a, "{:.2f}")
     put("q9_auc", ab["qwen9b"]["auroc_score"], a, "{:.2f}"); put("gem_auc", ab["gemini38flash"]["auroc_score"], a, "{:.2f}")
+    put("q9_f", ab["qwen9b"]["flags_by_k"]["1"]["failures_flagged"], a + ", qwen9b flags_by_k (k-invariant)", "{:d}")
+    put("q9_s", ab["qwen9b"]["flags_by_k"]["1"]["successes_flagged"], a + ", qwen9b flags_by_k (k-invariant)", "{:d}")
+    put("gem_f", ab["gemini38flash"]["flags_by_k"]["1"]["failures_flagged"], a + ", gemini38flash flags_by_k (k-invariant)", "{:d}")
+    put("gem_s", ab["gemini38flash"]["flags_by_k"]["1"]["successes_flagged"], a + ", gemini38flash flags_by_k (k-invariant)", "{:d}")
     jt = J(R / "six-monitors/expected/judge_tau.json"); a = "Judge tau, .../2026-10-19_judge_tau/judge_tau.json"
     put("tau_caught", jt["caught_failed"], a, "{:d}")
+    put("tau_fi", round(jt["false_intervention_rate"] * jt["success_episodes"]), a + ", false_intervention_rate x success_episodes", "{:d}")
     w = J(R / "six-monitors/expected/w1a_summary.json")["g16_set"]; a = "W1-A, .../2026-10-19_w1_screening/w1a_summary.json"
     put("w1_l2", w["l2"]["caught_failed"], a, "{:.0f}"); put("w1_l2_auc", w["l2"]["auroc"], a, "{:.2f}"); put("w1_cos", w["cos"]["caught_failed"], a, "{:.0f}")
+    put("w1_l2_fi", round(w["l2"]["false_intervention_rate"] * w["l2"]["success_episodes"]), a + ", l2 false_intervention_rate x success_episodes", "{:d}")
+    put("w1_cos_fi", round(w["cos"]["false_intervention_rate"] * w["cos"]["success_episodes"]), a + ", cos false_intervention_rate x success_episodes", "{:d}")
+    put("w1_cos_auc", w["cos"]["auroc"], a, "{:.2f}")
     r = J(R / "reap/expected/monitors_v2.json")["primary_50"]; a = "REAP v2, paper-vs-hardware .../reap/expected/monitors_v2.json"
     put("r2_log_c", r["risk_logistic:true"]["caught"], a, "{:.0f}"); put("r2_log_fi", r["risk_logistic:true"]["fi"], a, "{:.0f}")
     put("r2_log_auc", r["risk_logistic:true"]["auroc"], a, "{:.2f}"); put("r2_sh_auc", r["risk_logistic:shuffled"]["auroc"], a, "{:.2f}")
@@ -157,11 +176,12 @@ def figures():
             ("episode length, within policy", f("len_within"), f("len_within_lo"), f("len_within_hi"), sc.GREY),
             ("length seen up to 50 % of T, within policy", f("t50_within"), f("t50_lo"), f("t50_hi"), sc.CATEGORICAL[2]),
             ("Robometer-4B zero-shot, pooled", f("rbm_pooled"), f("rbm_lo"), f("rbm_hi"), sc.CATEGORICAL[1]),
+            ("Robometer-4B last progress, pooled (no CI)", f("rbm_prog"), f("rbm_prog"), f("rbm_prog"), sc.CATEGORICAL[1]),
             ("TOPReward (Qwen3-VL-8B), within policy", f("topr_within"), f("topr_lo"), f("topr_hi"), sc.ACCENT)]
-    fig, ax = plt.subplots(figsize=(3.3, 1.75))
-    ax.barh(range(5), [r[1] for r in rows], xerr=[[r[1] - r[2] for r in rows], [r[3] - r[1] for r in rows]],
+    fig, ax = plt.subplots(figsize=(3.3, 2.0))
+    ax.barh(range(len(rows)), [r[1] for r in rows], xerr=[[r[1] - r[2] for r in rows], [r[3] - r[1] for r in rows]],
             color=[r[4] for r in rows], linewidth=0, error_kw={"elinewidth": 0.6, "capsize": 1.5})
-    ax.set_yticks(range(5)); ax.set_yticklabels([r[0] for r in rows], fontsize=6); ax.invert_yaxis(); ax.set_xlim(0.5, 1.0)
+    ax.set_yticks(range(len(rows))); ax.set_yticklabels([r[0] for r in rows], fontsize=6); ax.invert_yaxis(); ax.set_xlim(0.5, 1.0)
     for i, r in enumerate(rows):
         ax.text(r[3] + 0.006, i, f"{r[1]:.3f}", va="center", fontsize=6)
     ax.set_xlabel(f"failure AUROC, n = {N['ab_n']}")
@@ -182,11 +202,12 @@ def figures():
     fig.tight_layout(); fig.savefig(FIG / "truncation.pdf"); fig.savefig(FIG / "truncation.png"); plt.close(fig)
     # 3. own rollouts: failures caught / 8 vs successes flagged / 42
     pts = [("Flora-27B", int(N["flora_f"]), int(N["flora_s"])), ("Qwen3.5-27B", int(N["q27_f"]), int(N["q27_s"])),
-           ("Gemini windows", int(N["tau_caught"]), 1), ("W1 surprise", int(N["w1_l2"]), 2), ("W1 drift", int(N["w1_cos"]), 2),
+           ("Gemini windows", int(N["tau_caught"]), int(N["tau_fi"])), ("WM surprise", int(N["w1_l2"]), int(N["w1_l2_fi"])),
+           ("WM drift", int(N["w1_cos"]), int(N["w1_cos_fi"])),
            ("risk head v2", int(N["r2_log_c"]), int(N["r2_log_fi"])), ("risk MLP v2", int(N["r2_mlp_c"]), int(N["r2_mlp_fi"]))]
     fig, ax = plt.subplots(figsize=(3.3, 2.0))
     ax.add_patch(matplotlib.patches.Rectangle((-0.5, 5), 2.9, 3.6, color=sc.GREY, alpha=0.2, lw=0, zorder=0)); ax.text(0, 8.25, "monitor bar", fontsize=6)
-    off = {"Gemini windows": (-4, 6), "W1 drift": (4, -9)}
+    off = {"Gemini windows": (-4, 6), "WM drift": (4, -9)}
     for lab, f, s in pts:
         judge = lab in ("Flora-27B", "Qwen3.5-27B")  # judges at rest, in-sample operating point: not the monitor bar
         ax.plot(s, f, "s" if judge else "o", color=sc.ACCENT, ms=3.5 if judge else 3, mfc="white" if judge else sc.ACCENT)
@@ -203,13 +224,28 @@ def render(src, dst):
     (HERE / dst).write_text(re.sub(r"\{\{(\w+)\}\}", lambda m: N[m.group(1)], t))
 
 
+def bib():
+    """refs.bib is hand-maintained (authors from the papers' PDFs and the model cards); check it against the
+    citations: every \\cite key of main.src.tex has an entry and every entry is cited."""
+    keys = set()
+    for grp in re.findall(r"\\cite[pt]?\{([^}]*)\}", (HERE / "main.src.tex").read_text()):
+        keys |= {k.strip() for k in grp.split(",")}
+    have = set(re.findall(r"@\w+\{(\w+),", (HERE / "refs.bib").read_text()))
+    assert keys <= have, f"cited but not in refs.bib: {sorted(keys - have)}"
+    assert have <= keys, f"in refs.bib but never cited: {sorted(have - keys)}"
+    return len(have)
+
+
 def main():
     collect()
     (HERE / "numbers.json").write_text(json.dumps({k: {"value": N[k], "anchor": A[k]} for k in sorted(N)}, indent=1))
     figures(); render("DRAFT_4p.src.md", "DRAFT_4p.md")
+    p = HERE / "DRAFT_4p.md"  # the markdown render drops the citation markers; the References section lists the works
+    p.write_text(re.sub(r" ?\[@[^\]]+\]", "", p.read_text()))
     if (HERE / "main.src.tex").exists():
         render("main.src.tex", "main.tex")
-    print(f"{len(N)} numbers, 3 figures, rendered")
+    nb = bib()
+    print(f"{len(N)} numbers, 3 figures, {nb} references, rendered")
 
 
 if __name__ == "__main__":
