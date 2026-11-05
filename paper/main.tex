@@ -79,7 +79,7 @@ TOPReward, Yes/\allowbreak{}No component (descriptive) & --- & 0.678 \\
 \begin{figure}[t]\centering\includegraphics[width=\columnwidth]{fig/armnetbench.pdf}\caption{Failure AUROC on ArmnetBench: episode length against two zero-shot reward models. Length leads both, pooled and within policy (95 \% CIs where available).}\end{figure}
 
 
-\section{Is it the timeout?}
+\section{Length is more than the timeout}
 If length only reflected the timeout, its signal would sit in the few runs that hit it. We take each task's longest
 episode as its timeout, and only 8.7 \% of failures run that long. At half that length, 88 \% of
 failures are still running but only 19 \% of successes. Length observed up to that cut gives

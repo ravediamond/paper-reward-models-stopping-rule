@@ -68,7 +68,7 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 
 ![Failure AUROC on ArmnetBench: episode length against two zero-shot reward models. Length leads both, pooled and within policy (95 % CIs where available).](fig/armnetbench.png)
 
-## 4 Is it the timeout?
+## 4 Length is more than the timeout
 
 If length only reflected the timeout, its signal would sit in the few runs that hit it. We take each task's longest
 episode as its timeout, and only {{hit_fail}} % of failures run that long. At half that length, {{t50_run_fail}} % of
