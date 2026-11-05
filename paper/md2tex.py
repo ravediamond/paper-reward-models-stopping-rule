@@ -52,6 +52,13 @@ def convert(block_lines):
     out, cap, i = "", "", 0
     while i < len(block_lines):
         l = block_lines[i]
+        if l.startswith("```"):  # fenced code from the repository: printed verbatim
+            j = i + 1
+            while j < len(block_lines) and not block_lines[j].startswith("```"):
+                j += 1
+            out += "\\begin{lstlisting}\n" + "\n".join(block_lines[i + 1:j]) + "\n\\end{lstlisting}\n"
+            i = j + 1
+            continue
         if re.match(r"Table \d+: ", l):
             cap = esc(l.split(": ", 1)[1])
         elif l.startswith("|"):
@@ -91,6 +98,7 @@ TPL = r"""\documentclass[10pt,twocolumn]{article}
 \usepackage[margin=0.75in]{geometry}
 \usepackage{graphicx,amssymb,hyperref,booktabs}
 \usepackage[numbers]{natbib}
+\usepackage{listings}\lstset{basicstyle=\ttfamily\scriptsize,breaklines=true,columns=fullflexible,keepspaces=true,frame=tb,framerule=0.3pt,aboveskip=4pt,belowskip=4pt,upquote=true}
 \usepackage{style/shisso}
 \shissorepo{github.com/ravediamond/paper-reward-models-stopping-rule}
 \title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}

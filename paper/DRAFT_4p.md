@@ -47,6 +47,19 @@ On ArmnetBench, episode length is a strong failure detector within each policy (
 it reaches 0.938. Within each policy it ranges from 0.91 to 0.96. Pair-weighted, the
 within-policy value is 0.942, with a CI of 0.927–0.956.
 
+The within-policy value pair-weights the per-policy AUROCs (`repro/length-null/scripts/length_analysis.py`):
+
+```python
+def stratified(df, score, by="policy_type"):
+    """Pair-weighted mean of per-stratum AUROCs (weights successes x failures)."""
+    num = den = 0.0
+    for _, g in df.groupby(by):
+        a = auroc(g.y, g[score]); w = g.y.sum() * (~g.y).sum()
+        if a is not None:
+            num += a * w; den += w
+    return num / den if den else None
+```
+
 We ran Robometer-4B zero-shot, as its authors ship it. It scores 0.818 pooled and 0.821
 within policy. The within-policy value is pair-weighted over its per-policy scores, and their range stands in for a CI
 (§7). We ran TOPReward with Qwen3-VL-8B and no training. It scores 0.661 within
