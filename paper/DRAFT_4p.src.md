@@ -54,8 +54,7 @@ def stratified(df, score, by="policy_type"):
 ```
 
 We ran Robometer-4B [@robometer] zero-shot, as its authors ship it. It scores {{rbm_pooled}} pooled and {{rbm_within}}
-within policy. The within-policy value is pair-weighted over its per-policy scores, and their range stands in for a CI
-(§7). We ran TOPReward [@topreward] with Qwen3-VL-8B [@qwen3vl] and no training. It scores {{topr_within}} within
+within policy (CI {{rbm_w_lo}}–{{rbm_w_hi}}). Its paired difference to length has a 95 % CI of {{rbm_d_lo}} to {{rbm_d_hi}}. We ran TOPReward [@topreward] with Qwen3-VL-8B [@qwen3vl] and no training. It scores {{topr_within}} within
 policy. Its paired difference to length has a 95 % CI of {{topr_d_lo}} to {{topr_d_hi}}. The protocols fixed each
 model's primary score before any score existed. For Robometer it is the success probability, and for TOPReward the
 success score of its paper. Two other scores from the same runs are in Table 1 as descriptive rows. They are higher,
@@ -67,7 +66,7 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 |---|---|---|
 | episode length | {{len_pooled}} ({{len_pooled_lo}}–{{len_pooled_hi}}) | {{len_within}} ({{len_within_lo}}–{{len_within_hi}}) |
 | length seen up to 50 % of the longest run | — | {{t50_within}} ({{t50_lo}}–{{t50_hi}}) |
-| Robometer-4B, success probability | {{rbm_pooled}} ({{rbm_lo}}–{{rbm_hi}}) | {{rbm_within}} (per-policy {{rbm_within_min}}–{{rbm_within_max}}) |
+| Robometer-4B, success probability | {{rbm_pooled}} ({{rbm_lo}}–{{rbm_hi}}) | {{rbm_within}} ({{rbm_w_lo}}–{{rbm_w_hi}}) |
 | Robometer-4B, last progress (descriptive) | {{rbm_prog}} (no CI) | — |
 | TOPReward, success score | {{topr_pooled}} ({{topr_pooled_lo}}–{{topr_pooled_hi}}) | {{topr_within}} ({{topr_lo}}–{{topr_hi}}) |
 | TOPReward, Yes/No component (descriptive) | — | {{topr_yn_within}} |
@@ -76,7 +75,7 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 
 ## 4 Length is more than the timeout
 
-Only {{hit_fail}} % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 2). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
+Only {{hit_fail}} % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 2). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Robometer's success probability at the last frame before the cut gives {{rbm_t50}} within policy (CI {{rbm_t50_lo}}–{{rbm_t50_hi}}), which is below length at that cut. At a quarter of the longest episode the order is the other way, {{rbm_t25}} for Robometer against {{len_t25}} for length, and by three quarters length is ahead again, {{len_t75}} against {{rbm_t75}}. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
 
 ![Length observed up to a fraction of the task's longest episode, AUROC within policy: most of the signal is there by half the episode (band: 95 % CI).](fig/truncation.png)
 
@@ -138,9 +137,7 @@ A single operator, the author, labelled them and was not blind to the policy. Th
 on the threshold. Fresh rollouts scored at the frozen thresholds would confirm the operating points.
 {{own_turbo_fail}} of the {{own_fail}} failures in our 69 rollouts are TurboVLA's. Any score that reads the policy
 therefore gets the policy-identity null for free. The risk head is trained and tested on the same 50 episodes. Five
-folds by episode keep episodes from leaking, but tasks and policies leak. Robometer's per-episode scores stayed on an
-older machine. Its within-policy number therefore has no episode-bootstrap CI, and it is missing from the truncation
-analysis. A copy from that machine or a re-score of about ${{rbm_rescore}} would restore both. TOPReward's paper does
+folds by episode keep episodes from leaking, but tasks and policies leak. Robometer's truncated scores are prefixes of one pass over the whole episode. A frame's value may depend on later frames, so a pass over a clip that ends at the cut could give a different number. The {{rbm_n_rescore}} episodes that ran out of memory in the first pass were scored in a second pass on a larger GPU, with every frame kept. TOPReward's paper does
 not give its prefix count, frames per query or Yes/No wording, so those are our choices. The ArmnetBench result covers
 eight tasks. The timeout is approximated by each task's longest episode.
 
@@ -158,7 +155,7 @@ Every number is recomputable from the repository; this table maps each analysis 
 | analysis | repro folder | expected files | protocol |
 |---|---|---|---|
 | length baseline, truncation | repro/length-null | length_armnetbench.json, counts_ci.json | LENGTH_PROTOCOL.md, frozen `1a69f30` |
-| Robometer on ArmnetBench | repro/robometer-judge | g9a_ab_complete.json | PROTOCOL.md (primary score fixed there) |
+| Robometer on ArmnetBench | repro/robometer-judge, repro/length-null | g9a_ab_complete.json, robometer_length.json | PROTOCOL.md (primary score fixed there); length-null amendment 2026-11-05 |
 | Robometer and length on own rollouts | repro/robometer-judge | g9a_own.json | PROTOCOL.md |
 | colour judge | repro/robometer-judge | g9c3_test_results.json | PROTOCOL.md |
 | TOPReward, both datasets | repro/topreward | topreward.json, own_rollout_labels.csv | TOPREWARD_PROTOCOL.md, `6241570` |

@@ -46,6 +46,23 @@ check("episodes", len(rows), R["n"], 0)
 check("pooled AUROC of -length", auroc([r["y"] for r in rows], [-r["length"] for r in rows]), R["a_pooled"]["auroc"])
 check("within-policy AUROC of -length", within(rows, lambda r: -r["length"]), R["a_within_policy_stratified"]["auroc"])
 check("within-policy AUROC, length cut at 50 % of T", within(rows, lambda r: -min(r["length"], 0.5 * T[r["task"]])), R["b_truncated"]["0.5"]["within_policy"])
+# (c) Robometer under (a) and (b), amendment 2026-11-05: recomputed from expected/robometer_scores.jsonl
+C = json.loads((E / "robometer_length.json").read_text())
+rb = {r["episode_index"]: r for r in (json.loads(l) for l in (E / "robometer_scores.jsonl").read_text().splitlines())}
+for r in rows:
+    r["ep"] = int(r["episode_index"]); r["p"] = rb[r["ep"]]["p_succ"] if r["ep"] in rb else None
+rr = [r for r in rows if r["p"] is not None]
+check("Robometer rows matched", len(rr), C["n_scored"], 0)
+check("Robometer pooled AUROC", auroc([r["y"] for r in rr], [r["p"] for r in rr]), C["pooled"]["auroc"])
+check("Robometer within-policy AUROC", within(rr, lambda r: r["p"]), C["within_policy"]["auroc"])
+check("Robometer minus length, within policy", within(rr, lambda r: r["p"]) - within(rr, lambda r: -r["length"]), C["difference_within_policy"]["robometer_minus_length"])
+for t in ("0.25", "0.5", "0.75"):
+    def pre(r, t=float(t)):
+        x = rb[r["ep"]]; n = x["n_frames"]; ok = [k for k in range(n) if (k + 1) / n * r["length"] <= t * T[r["task"]]]
+        return x["success_prob"][ok[-1] if ok else 0]
+    check(f"Robometer prefix within-policy AUROC at {t} T", within(rr, pre), C["truncated"][t]["robometer_within_policy"])
+    check(f"length cut within-policy AUROC at {t} T", within(rr, lambda r, t=float(t): -min(r["length"], t * T[r["task"]])), C["truncated"][t]["length_within_policy"])
+
 f = [r for r in rows if not r["y"]]
 check("failures reaching 0.98 T", sum(r["length"] >= 0.98 * T[r["task"]] for r in f) / len(f), R["b_timeout_share"]["failures_hit"])
 for name, c in json.loads((E / "counts_ci.json").read_text()).items():

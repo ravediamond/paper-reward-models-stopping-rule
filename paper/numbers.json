@@ -91,6 +91,18 @@
   "value": "0.925",
   "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
  },
+ "len_t25": {
+  "value": "0.617",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "len_t50": {
+  "value": "0.851",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "len_t75": {
+  "value": "0.931",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
  "len_within": {
   "value": "0.942",
   "anchor": "repro/length-null/expected/length_armnetbench.json, WS-077 length analysis (LENGTH_PROTOCOL.md, 1a69f30)"
@@ -195,6 +207,18 @@
   "value": "0.71",
   "anchor": "repro/reap/expected/monitors_v2.json, REAP v2"
  },
+ "rbm_d": {
+  "value": "-0.122",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_d_hi": {
+  "value": "-0.094",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_d_lo": {
+  "value": "-0.150",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
  "rbm_hi": {
   "value": "0.843",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete"
@@ -202,6 +226,10 @@
  "rbm_lo": {
   "value": "0.790",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete"
+ },
+ "rbm_n_rescore": {
+  "value": "462",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
  },
  "rbm_pooled": {
   "value": "0.818",
@@ -211,9 +239,73 @@
   "value": "0.838",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: baselines.last_progress_auroc"
  },
- "rbm_rescore": {
-  "value": "6",
-  "anchor": "repro/length-null/LENGTH_RESULTS.md: 'approve the ~$6 re-score on vast'"
+ "rbm_t25": {
+  "value": "0.706",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t25_d_hi": {
+  "value": "0.129",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t25_d_lo": {
+  "value": "0.049",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t25_hi": {
+  "value": "0.734",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t25_lo": {
+  "value": "0.677",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t50": {
+  "value": "0.814",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t50_d_hi": {
+  "value": "-0.011",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t50_d_lo": {
+  "value": "-0.064",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t50_hi": {
+  "value": "0.839",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t50_lo": {
+  "value": "0.787",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t75": {
+  "value": "0.821",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t75_d_hi": {
+  "value": "-0.082",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t75_d_lo": {
+  "value": "-0.138",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t75_hi": {
+  "value": "0.846",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_t75_lo": {
+  "value": "0.794",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_w_hi": {
+  "value": "0.847",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+ },
+ "rbm_w_lo": {
+  "value": "0.794",
+  "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
  },
  "rbm_within": {
   "value": "0.821",

@@ -104,3 +104,6 @@ Every file copied into this repository, with its source. Source commits at copy 
 | `repro/reap/scripts/run_reap.py` | paper-vs-hardware | 9d3128b735 | `posts/2026-10-23-paper-vs-hardware-reap/scripts/run_reap.py` | 90bb557639e0 |
 | `repro/reap/scripts/run_reap_v2.py` | paper-vs-hardware | 9d3128b735 | `posts/2026-10-23-paper-vs-hardware-reap/scripts/run_reap_v2.py` | 315b1ccd76d9 |
 | `repro/reap/scripts/run_w1_offline_screening.py` | paper-vs-hardware | 9d3128b735 | `posts/2026-10-23-paper-vs-hardware-reap/scripts/run_w1_offline_screening.py` | 9735738156f2 |
+| `repro/length-null/expected/robometer_scores.jsonl` | derived | | derived: first-run and rescore rows of the private Hub dataset ravediamond/g9a-ab-results (out/ab_top.jsonl, rescore/ab_top_rescore.jsonl; SHA256SUMS in the dataset), 2026-11-05 | 69340f0e67db |
+| `repro/length-null/expected/robometer_length.json` | derived | | derived: scripts/robometer_analysis.py | b5d74c032014 |
+| `repro/length-null/scripts/robometer_analysis.py` | derived | | derived: written for this repository | 4b46eddb81ec |

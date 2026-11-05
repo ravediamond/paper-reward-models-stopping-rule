@@ -162,10 +162,15 @@ def collect():
     for key, name in (("flora_s_ci", "G-flora: successes flagged"), ("w1_l2_ci", "W1-A L2 surprise: failures caught"),
                       ("r2_log_ci", "REAP v2 logistic: failures"), ("g9c3_fp_ci", "G9c-3: false positives")):
         lo, hi = cc[name]["wilson95"]; put(key, f"{100 * lo:.0f}–{100 * hi:.0f} %", a)
-    lr = "length-null/LENGTH_RESULTS.md"; txt = "approve the ~$6 re-score on vast"
-    assert txt in (R / lr).read_text(), f"{txt!r} not in {lr}"
-    put("rbm_rescore", "6", f"repro/{lr}: '{txt}'")
-
+    C = J(R / "length-null/expected/robometer_length.json"); a = "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
+    put("rbm_w_lo", C["within_policy"]["ci95"][0], a); put("rbm_w_hi", C["within_policy"]["ci95"][1], a)
+    put("rbm_d_lo", C["difference_within_policy"]["ci95"][0], a); put("rbm_d_hi", C["difference_within_policy"]["ci95"][1], a)
+    put("rbm_d", C["difference_within_policy"]["robometer_minus_length"], a)
+    for t, k in (("0.25", "25"), ("0.5", "50"), ("0.75", "75")):
+        T = C["truncated"][t]
+        put(f"rbm_t{k}", T["robometer_within_policy"], a); put(f"rbm_t{k}_lo", T["robometer_ci95"][0], a); put(f"rbm_t{k}_hi", T["robometer_ci95"][1], a)
+        put(f"len_t{k}", T["length_within_policy"], a); put(f"rbm_t{k}_d_lo", T["difference_ci95"][0], a); put(f"rbm_t{k}_d_hi", T["difference_ci95"][1], a)
+    put("rbm_n_rescore", C["sources"]["rescore"], a, "{:d}")
 
 def figures():
     import matplotlib
@@ -198,6 +203,10 @@ def figures():
     hi = [L["b_truncated"][t]["within_policy_ci95"][1] for t in ts]
     ax.plot(x + [100], y + [float(N["len_within"])], marker="o", ms=3, color=sc.ACCENT, lw=1.2)
     sc.band(ax, x, lo, hi)
+    C = J(R / "length-null/expected/robometer_length.json")
+    ry = [C["truncated"][t]["robometer_within_policy"] for t in ts] + [C["within_policy"]["auroc"]]
+    ax.plot(x + [100], ry, marker="s", ms=3, color=sc.CATEGORICAL[1], lw=1.0, ls="--")
+    ax.text(100, ry[-1] - 0.045, "Robometer", fontsize=5.5, ha="right", color=sc.CATEGORICAL[1]); ax.text(100, y[-1] + 0.02, "length", fontsize=5.5, ha="right", color=sc.ACCENT)
     sc.bar_line(ax, 0.60); ax.text(27, 0.615, "reading rule 0.60", fontsize=6)
     ax.set_xlabel("length seen up to (% of longest episode)"); ax.set_ylabel("AUROC within policy"); ax.set_ylim(0.5, 1.0)
     for s in ("top", "right"):

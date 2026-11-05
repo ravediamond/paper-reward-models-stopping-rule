@@ -326,7 +326,7 @@
    "still_running_successes": 0.04660194174757282
   }
  },
- "c_robometer": "not run: per-episode scores not on the Orin (old Mac archive); re-score ~$6 on vast is the owner's call",
+ "c_robometer": "see robometer_length.json (amendment 2026-11-05 of PROTOCOL.md)",
  "reading": {
   "within_policy_null": true,
   "more_than_timeout_t050": true
