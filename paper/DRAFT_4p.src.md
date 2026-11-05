@@ -24,9 +24,7 @@ out-of-distribution results). When the operator stops each run by his judgment, 
 way a dataset ends its episodes its stopping rule. None of the reward-model papers in our library reports the stopping
 rule or a length baseline.
 
-We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it.
-On them length is near chance, and a robot-trained judge passed its pre-registered threshold. The stopping rule
-separates the two results, so it became the subject of the paper.
+We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it. Length is near chance on them. A robot-trained judge passed its pre-registered threshold on them. What separates the two results is the stopping rule, so it became the subject of the paper.
 
 We measured length on ArmnetBench [@armnetbench] and on our own rollouts. The length analyses were frozen before any
 number existed. We compared length with two zero-shot reward models, Robometer [@robometer] and TOPReward
@@ -34,12 +32,7 @@ number existed. We compared length with two zero-shot reward models, Robometer [
 
 ## 2 Data and labels
 
-ArmnetBench v0.1 [@armnetbench] has 8 tasks and {{n_pol}} policies on the SO-101. We use its {{ab_n}} policy rollouts
-with a success or failure class ({{ab_ok}} successes, {{ab_fail}} failures). We leave out the teleoperated episodes.
-One task, pushing a Displayport cable ({{dp_n}} rollouts), has rollouts of a single class and so no per-task AUROC.
-Our own data are 88 labelled bowls-task episodes on one SO-101 arm with a Jetson Orin NX. Every monitor gate used the
-same 50-episode subset (42 successes, 8 failures). The author was the operator. He stopped each run and labelled it at
-rest, not blind to the policy.
+ArmnetBench v0.1 [@armnetbench] has 8 tasks and {{n_pol}} policies on the SO-101. We use its {{ab_n}} policy rollouts that have a success or failure class ({{ab_ok}} successes, {{ab_fail}} failures) and leave out the teleoperated episodes. One task, pushing a Displayport cable ({{dp_n}} rollouts), has rollouts of a single class, so it has no per-task AUROC. Our own data are 88 labelled bowls-task episodes on one SO-101 arm with a Jetson Orin NX. Every monitor gate used the same 50-episode subset (42 successes, 8 failures). The author was the operator, stopped each run and labelled it at rest, and was not blind to the policy.
 
 ## 3 The length baseline
 
@@ -83,10 +76,7 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 
 ## 4 Length is more than the timeout
 
-We take each task's longest episode as its timeout. Only {{hit_fail}} % of failures run that long. At half that
-length, {{t50_run_fail}} % of failures are still running. Only {{t50_run_ok}} % of successes are. Length observed up
-to that cut gives {{t50_within}} within policy (CI {{t50_lo}}–{{t50_hi}}; Fig. 2). TOPReward on frames up to the same
-cut reaches {{topr_cap}}. Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
+Only {{hit_fail}} % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 2). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
 
 ![Length observed up to a fraction of the task's longest episode, AUROC within policy: most of the signal is there by half the episode (band: 95 % CI).](fig/truncation.png)
 
@@ -139,15 +129,7 @@ Table 2: Judges and monitors on the 50 operator-stopped rollouts (42 successes, 
 
 ## 6 Related work
 
-Robometer [@robometer] scales a general-purpose reward model through trajectory comparisons. TOPReward [@topreward]
-reads the token probabilities of a video-language model as hidden rewards. A survey of verifiers for robot policies
-[@nofreechecker] covers the wider family. FAIL-Detect [@faildetect] and SAFE [@safe] learn uncertainty- and
-feature-based failure scores for imitation and VLA policies. FARM [@farm] reads failure signals from the internal
-states of a frozen world model, like our world-model monitors. ReAP [@reap] predicts action-conditioned risk, and our
-risk head follows it. VLA-Corrector [@vlacorrector] verifies stages, Spotter [@spotter] adds a reflecting VLM, and
-REMORA [@remora] tracks progress through errors and recovery. ArmnetBench [@armnetbench] and a standardized SO-101 VLA
-benchmark [@so101bench] evaluate policies on the same arm. None of these works reports the elapsed-length baseline
-under the dataset's stopping rule.
+Robometer [@robometer] scales a general-purpose reward model through trajectory comparisons. TOPReward [@topreward] reads the token probabilities of a video-language model as hidden rewards. A survey of verifiers for robot policies [@nofreechecker] covers the wider family. FAIL-Detect [@faildetect] and SAFE [@safe] learn uncertainty- and feature-based failure scores for imitation and VLA policies. FARM [@farm] reads failure signals from the internal states of a frozen world model, like our world-model monitors. Our risk head follows ReAP [@reap], which predicts action-conditioned risk. VLA-Corrector [@vlacorrector] verifies stages, Spotter [@spotter] adds a reflecting VLM, and REMORA [@remora] tracks progress through errors and recovery. ArmnetBench [@armnetbench] and a standardized SO-101 VLA benchmark [@so101bench] evaluate policies on the same arm. We found no report of the elapsed-length baseline under the dataset's stopping rule in any of them.
 
 ## 7 Limitations
 
