@@ -9,7 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 md = (HERE / "DRAFT_4p.src.md").read_text()
 
-SUB = [("&", r"\&"), ("%", r"\%"), ("#", r"\#"), ("_", r"\_"), ("≥", r"$\geq$"), ("≤", r"$\leq$"),
+SUB = [("$", r"\$"), ("&", r"\&"), ("%", r"\%"), ("#", r"\#"), ("_", r"\_"), ("≥", r"$\geq$"), ("≤", r"$\leq$"),
        ("×", r"$\times$"), ("°", r"$^\circ$"), ("τ", r"$\tau$"), ("—", "---"), ("–", "--"), ("±", r"$\pm$")]
 
 

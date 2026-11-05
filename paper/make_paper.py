@@ -162,6 +162,9 @@ def collect():
     for key, name in (("flora_s_ci", "G-flora: successes flagged"), ("w1_l2_ci", "W1-A L2 surprise: failures caught"),
                       ("r2_log_ci", "REAP v2 logistic: failures"), ("g9c3_fp_ci", "G9c-3: false positives")):
         lo, hi = cc[name]["wilson95"]; put(key, f"{100 * lo:.0f}–{100 * hi:.0f} %", a)
+    lr = "length-null/LENGTH_RESULTS.md"; txt = "approve the ~$6 re-score on vast"
+    assert txt in (R / lr).read_text(), f"{txt!r} not in {lr}"
+    put("rbm_rescore", "6", f"repro/{lr}: '{txt}'")
 
 
 def figures():

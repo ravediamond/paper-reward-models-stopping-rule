@@ -211,6 +211,10 @@
   "value": "0.838",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: baselines.last_progress_auroc"
  },
+ "rbm_rescore": {
+  "value": "6",
+  "anchor": "repro/length-null/LENGTH_RESULTS.md: 'approve the ~$6 re-score on vast'"
+ },
  "rbm_within": {
   "value": "0.821",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: within_policy block, pair-weighted by n_success x n_failure (checked by l0_check.py)"
