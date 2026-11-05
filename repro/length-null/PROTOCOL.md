@@ -50,3 +50,13 @@ interval (2,000, seed 0; for a count of independent episodes, resampling the n e
 
 `journal/papers/failure-monitors/length_analysis.py`, `results/length_armnetbench.json`, `results/counts_ci.json`,
 `LENGTH_RESULTS.md`; then `DRAFT_4p.md` + `main.tex` (rendered as in WS-076).
+
+## Amendment 2026-11-05 (before any Robometer number is computed)
+
+The Robometer scores of G9a-AB were found in the private Hub dataset `ravediamond/g9a-ab-results` (`out/ab_top.jsonl`, `rescore/ab_top_rescore.jsonl`, `rescore/SHA256SUMS`), so analysis (c) runs and the $6 re-score is not needed. No frozen reading rule changes.
+
+- **Rows.** 1,637 episodes scored in the first run plus the 462 re-scored after out-of-memory failures (`expected/robometer_scores.jsonl`, one row per episode: `p_succ`, the per-frame `success_prob`, `n_frames`, source). The analysed set is the same 2,047 policy rollouts as (a).
+- **Scores.** `p_succ` is the success probability of the last scored frame of the full-episode pass, as in G9a-AB. The pass scores the episode's frames at 1 fps in one call.
+- **(c) under (a).** Pooled and stratified within-policy AUROC of `p_succ`, with the episode bootstrap of (a) (2,000 resamples, `default_rng(0)`, resampling within policy). The paired difference to length is the stratified within-policy AUROC of `p_succ` minus that of −length on the same resamples, and the reading rule above applies to its 95 % interval.
+- **(c) under (b).** For t ∈ {0.25, 0.50, 0.75} the score of an episode is `success_prob` at its last scored frame whose position, (k+1)/n_frames × length, is at most t·T; an episode with no such frame uses its first frame. T is the task's longest episode, as in (b). Length is cut at t·T as in (b) and the paired difference is taken on the same resamples.
+- **Limit, stated now.** The per-frame values come from one pass over the whole episode. A frame's value can depend on later frames, so a prefix of that pass is not the score Robometer would give to a clip that ends at t·T. The truncation result is therefore an upper bound on what a truly truncated pass gives, if later frames help.
