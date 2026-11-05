@@ -6,54 +6,53 @@ appendix maps every analysis to its result file and protocol.*
 
 ## Abstract
 
-Episode length is the failure detector that zero-shot reward models must beat, and how hard it is to beat depends on
-who stopped the episode. On a public SO-101 benchmark that anyone can rerun, where runs end at a time limit, length
-alone separates failure from success at AUROC {{len_within}} within policy. It does not need the timeout. Watched only
-up to half of the longest episode, it still gives {{t50_within}}, because failed runs are slow rather than cut off.
-Both reward models we test, run zero-shot, score below it, the better one at {{rbm_within}}. Our own rollouts, which
-an operator stopped by judgment, reverse the picture: length falls to {{topr_own_len}}, and what catches failures is a
-judge that sees the finished episode, passing its threshold at an operating point chosen in-sample. No mid-episode
-monitor reaches its bar. So report a within-policy length baseline, and name the dataset's stopping rule.
+Reward models that score robot rollouts are also used as failure detectors. We compared two zero-shot reward models
+with plain episode length. On ArmnetBench, a public SO-101 benchmark where runs end at a time limit, length separates
+failure from success at AUROC {{len_within}} within policy. Failed runs are slow rather than cut off. Length observed
+only up to half of the longest episode still gives {{t50_within}}. Both reward models score below length, the better
+one at {{rbm_within}}. On our own rollouts an operator stopped each run by judgment. There length falls to
+{{topr_own_len}}, and neither reward model beats the identity of the policy. A judge that sees the finished episode
+passes its threshold, at an operating point chosen in-sample. No mid-episode monitor reaches its bar. The baseline a
+detector has to beat depends on the dataset's stopping rule.
 
 ## 1 Introduction
 
-A reward model that scores robot rollouts is also a failure detector, and papers evaluate it as one, mostly against
-other learned detectors. The baseline that matters is often simpler. When a benchmark stops failed runs at a time
-limit, the length of an episode encodes its outcome, and so does the identity of the policy that ran (we call the
-second one the policy-identity null). When an operator stops each run by judgment, both signals collapse and the
-detection task changes with them. Which of the two a dataset uses is its *stopping rule*, and none of the
-reward-model papers in our library reports it or the length baseline it implies.
+Papers that evaluate a reward model as a failure detector usually compare it with other learned detectors. When a
+benchmark stops failed runs at a time limit, the length of an episode also encodes its outcome. The identity of the
+policy that ran can carry it too, and we call this the policy-identity null. When an operator stops each run by
+judgment, both signals are weaker. We call the way a dataset ends its episodes its *stopping rule*. None of the
+reward-model papers in our library reports the stopping rule or a length baseline.
 
-We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts broke it. On them
-length is near chance while a robot-trained judge passed its pre-registered threshold, and since the stopping rule is
-what separates the two results, it became the subject of the paper.
+We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it.
+On them length is near chance, and a robot-trained judge passed its pre-registered threshold. The stopping rule
+separates the two results, so it became the subject of the paper.
 
-We measured length on a public SO-101 benchmark [@armnetbench] and on our own rollouts, with the length analyses
-frozen before any number existed, and set against it two zero-shot reward models [@robometer; @topreward] and every
-judge and monitor we had run on our {{own_n}} operator-stopped rollouts.
+We measured length on ArmnetBench [@armnetbench] and on our own rollouts. The length analyses were frozen before any
+number existed. We compared length with two zero-shot reward models, Robometer [@robometer] and TOPReward
+[@topreward]. On our {{own_n}} operator-stopped rollouts we also compared it with every judge and monitor we had run.
 
 ## 2 Data and labels
 
-ArmnetBench v0.1 [@armnetbench] covers the SO-101 with 8 tasks and {{n_pol}} policies. We use its {{ab_n}} policy
-rollouts with a success or failure class ({{ab_ok}} successes, {{ab_fail}} failures) and leave out the teleoperated
-episodes. One task, pushing a Displayport cable ({{dp_n}} rollouts), has rollouts of a single class and so no per-task
-AUROC. Our own data are 88 labelled bowls-task episodes on one SO-101 arm with a Jetson Orin NX, and the 50-episode
-subset (42 successes, 8 failures) that every monitor gate used. The author was the operator: he stopped each run and
-labelled it at rest, not blind to the policy.
+ArmnetBench v0.1 [@armnetbench] has 8 tasks and {{n_pol}} policies on the SO-101. We use its {{ab_n}} policy rollouts
+with a success or failure class ({{ab_ok}} successes, {{ab_fail}} failures). We leave out the teleoperated episodes.
+One task, pushing a Displayport cable ({{dp_n}} rollouts), has rollouts of a single class and so no per-task AUROC.
+Our own data are 88 labelled bowls-task episodes on one SO-101 arm with a Jetson Orin NX. Every monitor gate used the
+same 50-episode subset (42 successes, 8 failures). The author was the operator. He stopped each run and labelled it at
+rest, not blind to the policy.
 
 ## 3 The length baseline
 
-On ArmnetBench, episode length is a strong failure detector, and not only because it tells the policies apart
-(Table 1, Fig. 1). Pooled over policies it reaches {{len_pooled}}. Within each policy it ranges from {{len_pol_min}}
-to {{len_pol_max}}, or {{len_within}} pair-weighted, with a CI of {{len_within_lo}}–{{len_within_hi}}.
+On ArmnetBench, episode length is a strong failure detector within each policy (Table 1, Fig. 1). Pooled over policies
+it reaches {{len_pooled}}. Within each policy it ranges from {{len_pol_min}} to {{len_pol_max}}. Pair-weighted, the
+within-policy value is {{len_within}}, with a CI of {{len_within_lo}}–{{len_within_hi}}.
 
-Both reward models, run zero-shot, fall below it on this benchmark. Robometer-4B [@robometer], as its authors ship it, scores
-{{rbm_pooled}} pooled and {{rbm_within}} within policy (pair-weighted over its per-policy scores, whose range stands in
-for a CI; §7 says why). TOPReward [@topreward], with Qwen3-VL-8B [@qwen3vl] and no training, scores {{topr_within}}
-within policy, and its paired difference to length has a 95 % CI of {{topr_d_lo}} to {{topr_d_hi}}. The protocols
-fixed each model's primary score before any score existed (Robometer's success probability, and the success score of
-TOPReward's paper). The two descriptive rows of Table 1, read from the same runs, score higher but still below
-length.
+We ran Robometer-4B [@robometer] zero-shot, as its authors ship it. It scores {{rbm_pooled}} pooled and {{rbm_within}}
+within policy. The within-policy value is pair-weighted over its per-policy scores, and their range stands in for a CI
+(§7). We ran TOPReward [@topreward] with Qwen3-VL-8B [@qwen3vl] and no training. It scores {{topr_within}} within
+policy. Its paired difference to length has a 95 % CI of {{topr_d_lo}} to {{topr_d_hi}}. The protocols fixed each
+model's primary score before any score existed. For Robometer it is the success probability, and for TOPReward the
+success score of its paper. Two other scores from the same runs are in Table 1 as descriptive rows. They are higher,
+and still below length.
 
 Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down the within-policy column: no reward-model score reaches length.
 
@@ -70,44 +69,42 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 
 ## 4 Length is more than the timeout
 
-If length only reflected the timeout, its signal would sit in the few runs that hit it. It does not. Taking each
-task's longest episode as its timeout, only {{hit_fail}} % of failures run that long. At half that length
-{{t50_run_fail}} % of failures are still running but only {{t50_run_ok}} % of successes, and length observed up to
-that cut gives {{t50_within}} within policy (CI {{t50_lo}}–{{t50_hi}}; Fig. 2). TOPReward on frames up to the same cut
-reaches {{topr_cap}}. Failed rollouts are slow, not timed out, and both readings fixed in the protocol hold.
+We take each task's longest episode as its timeout. Only {{hit_fail}} % of failures run that long. At half that
+length, {{t50_run_fail}} % of failures are still running. Only {{t50_run_ok}} % of successes are. Length observed up
+to that cut gives {{t50_within}} within policy (CI {{t50_lo}}–{{t50_hi}}; Fig. 2). TOPReward on frames up to the same
+cut reaches {{topr_cap}}. Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
 
 ![Length observed up to a fraction of the task's longest episode, AUROC within policy: most of the signal is there by half the episode (band: 95 % CI).](fig/truncation.png)
 
-On our own operator-stopped rollouts the same baseline is at chance: {{topr_own_len}} on the {{topr_own_n}} rollouts
-TOPReward scored and {{own_len}} on all {{own_n}}. The baseline that matters here is the policy-identity null, because
+On our own operator-stopped rollouts, length is at chance. It gives {{topr_own_len}} on the {{topr_own_n}} rollouts
+TOPReward scored and {{own_len}} on all {{own_n}}. Here the policy-identity null is the baseline to beat.
 {{own_turbo_fail}} of the {{own_fail}} failures in the {{topr_own_n}} come from one policy, TurboVLA [@turbovla].
-Neither reward model beats it. TOPReward scores {{topr_own}} (CI {{topr_own_lo}}–{{topr_own_hi}}) against
-{{topr_own_pol}} for policy identity alone, and {{topr_own_nt}} on the {{topr_own_nt_n}} episodes without TurboVLA.
-Robometer scores {{own_rbm}} against {{own_rbm_pol}} on all {{own_n}}.
+Neither reward model beats policy identity. TOPReward scores {{topr_own}} (CI {{topr_own_lo}}–{{topr_own_hi}}), and
+policy identity alone {{topr_own_pol}}. On the {{topr_own_nt_n}} episodes without TurboVLA, TOPReward scores
+{{topr_own_nt}}. Robometer scores {{own_rbm}} on all {{own_n}}, and policy identity {{own_rbm_pol}}.
 
 ## 5 Judges and monitors on our rollouts
 
-Table 2 gives each judge and monitor a threshold-free AUROC where one is defined, then failures caught and successes
-flagged at its operating point, which for the judges at rest is chosen in-sample.
+Table 2 gives each judge and monitor a threshold-free AUROC where one is defined. It also gives failures caught and
+successes flagged at the operating point. For the judges at rest, that point is chosen in-sample.
 
-A judge that sees the finished episode works on these rollouts, and the input format matters more than the robot
-fine-tune. A deterministic top-camera check (colour masks and geometry, no learning) is right on {{g9c3_acc}} % of
-judged episodes, with {{g9c3_fp}} false positives (Wilson {{g9c3_fp_ci}}) and {{g9c3_fn}} false negatives. Given a
-64-frame two-view clip and NVIDIA's prompt, Flora-Rewarder-27B [@flora27b] reaches a threshold-free AUROC of
-{{flora_auc}} (bootstrap CI {{flora_lo}}–{{flora_hi}}). At its in-sample operating point it flags {{flora_f}} of 8
-failures at {{flora_s}} of 42 successes (Wilson on the false alarms {{flora_s_ci}}), which passes the pre-registered
-bar of at least 6 of 8 failures at no more than 2 of 42 successes. Its base model Qwen3.5-27B [@qwen35], without the
-robot fine-tune, passes the same bar on the same input: AUROC {{q27_auc}} ({{q27_lo}}–{{q27_hi}}), {{q27_f}} of 8 at
-{{q27_s}} of 42. The smaller Qwen3.5-9B [@qwen35] and Gemini 3.8 Flash [@gemini38] fail it, the 9B by flagging
-{{q9_s}} successes and Gemini by one false alarm too many.
+We first ran a deterministic top-camera check (colour masks and geometry, no learning). It is right on {{g9c3_acc}} %
+of judged episodes. It has {{g9c3_fp}} false positives (Wilson {{g9c3_fp_ci}}) and {{g9c3_fn}} false negatives. We
+then gave Flora-Rewarder-27B [@flora27b] a 64-frame two-view clip and NVIDIA's prompt. It reaches a threshold-free
+AUROC of {{flora_auc}} (bootstrap CI {{flora_lo}}–{{flora_hi}}). At its in-sample operating point it flags {{flora_f}}
+of 8 failures at {{flora_s}} of 42 successes (Wilson on the false alarms {{flora_s_ci}}). The pre-registered bar was
+at least 6 of 8 failures at no more than 2 of 42 successes, so it passes. Its base model, Qwen3.5-27B [@qwen35], has
+no robot fine-tune. On the same input it also passes, with AUROC {{q27_auc}} ({{q27_lo}}–{{q27_hi}}) and {{q27_f}} of
+8 at {{q27_s}} of 42. The input format mattered more than the fine-tune. Qwen3.5-9B [@qwen35] flags {{q9_s}} successes
+and fails. Gemini 3.8 Flash [@gemini38] fails by one false alarm.
 
-On these 50 rollouts, no mid-episode monitor reaches its bar of at least 5 of 8 failures at no more than 1 of 20 false interventions (Fig.
-3). The surprise of a separate world model, trained in the LeWorldModel recipe [@lewm], comes closest with {{w1_l2}}
-of 8 at {{w1_l2_fi}} of 42 (AUROC {{w1_l2_auc}}). A Gemini sliding-window judge catches {{tau_caught}}. The
-action-conditioned risk head on the world model's latent has a history. Its first version reached AUROC
-{{r1_log_auc}}, but it read elapsed time, so we withdrew that result and pre-registered a second version without time
-or length. The second version catches {{r2_log_c}} of 8 at {{r2_log_fi}} of 42, with AUROC {{r2_log_auc}} against
-{{r2_sh_auc}} when its actions are shuffled, and its MLP variant catches {{r2_mlp_c}} of 8 but flags {{r2_mlp_fi}} of 42.
+The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor
+reaches it on these 50 rollouts (Fig. 3). The surprise of a separate world model, trained in the LeWorldModel recipe
+[@lewm], catches {{w1_l2}} of 8 at {{w1_l2_fi}} of 42 (AUROC {{w1_l2_auc}}). A Gemini sliding-window judge catches
+{{tau_caught}}. We also built an action-conditioned risk head on the world model's latent. Its first version reached
+AUROC {{r1_log_auc}}. It read elapsed time, so we withdrew that result. We pre-registered a second version without
+time or length. It catches {{r2_log_c}} of 8 at {{r2_log_fi}} of 42. Its AUROC is {{r2_log_auc}}, and {{r2_sh_auc}}
+with shuffled actions. The MLP variant catches {{r2_mlp_c}} of 8 and flags {{r2_mlp_fi}} of 42.
 
 Table 2: Judges and monitors on the 50 operator-stopped rollouts (42 successes, 8 failures). Judges see the finished episode; monitors are held to ≥ 5/8 caught at ≤ 1/20 false interventions.
 
@@ -128,36 +125,35 @@ Table 2: Judges and monitors on the 50 operator-stopped rollouts (42 successes, 
 
 ## 6 Related work
 
-Robometer [@robometer] and TOPReward [@topreward] are the two reward models we test. Robometer scales a
-general-purpose reward model through trajectory comparisons, TOPReward reads the token probabilities of a
-video-language model as hidden rewards, while a survey of verifiers for robot policies [@nofreechecker] maps the wider
-family. Our monitors borrow from the mid-episode line of work. FAIL-Detect [@faildetect] and SAFE [@safe] learn
-uncertainty- and feature-based failure scores for imitation and VLA policies. FARM [@farm] reads failure signals from
-the internal states of a frozen world model, close to our world-model monitors, and ReAP [@reap] predicts
-action-conditioned risk, the idea behind our risk head. VLA-Corrector [@vlacorrector], Spotter [@spotter] and REMORA
-[@remora] add stage verification, a reflecting VLM and recurrent progress tracking. ArmnetBench [@armnetbench] and a
-standardized SO-101 VLA benchmark [@so101bench] evaluate policies on the same low-cost arm. None of these works
-reports the elapsed-length baseline under the dataset's stopping rule, and that comparison is what this paper adds.
+Robometer [@robometer] scales a general-purpose reward model through trajectory comparisons. TOPReward [@topreward]
+reads the token probabilities of a video-language model as hidden rewards. A survey of verifiers for robot policies
+[@nofreechecker] covers the wider family. FAIL-Detect [@faildetect] and SAFE [@safe] learn uncertainty- and
+feature-based failure scores for imitation and VLA policies. FARM [@farm] reads failure signals from the internal
+states of a frozen world model, like our world-model monitors. ReAP [@reap] predicts action-conditioned risk, and our
+risk head follows it. VLA-Corrector [@vlacorrector] verifies stages, Spotter [@spotter] adds a reflecting VLM, and
+REMORA [@remora] tracks progress through errors and recovery. ArmnetBench [@armnetbench] and a standardized SO-101 VLA
+benchmark [@so101bench] evaluate policies on the same arm. None of these works reports the elapsed-length baseline
+under the dataset's stopping rule.
 
 ## 7 Limitations
 
-The judge pass on our own rollouts rests on 8 failures and on operating thresholds chosen on the same 50 episodes,
-labelled by a single operator, the author, who was not blind to the policy. The threshold-free AUROCs do not depend on
-that choice, and fresh rollouts scored at the frozen thresholds are the confirming test. Policy identity is a second
-confound: {{own_turbo_fail}} of the {{own_fail}} failures in our 69 rollouts are TurboVLA's, so any score that reads
-the policy gets the policy-identity null for free. The risk head is trained and tested on the same 50 episodes (five
-folds by episode keep episodes from leaking, but tasks and policies do leak). Robometer's within-policy number has no
-episode-bootstrap CI and Robometer is missing from the truncation analysis, because its per-episode scores stayed on
-an older machine; a copy from that machine or a re-score of about ${{rbm_rescore}} would restore both. TOPReward's
-paper does not give its prefix count, frames per query or Yes/No wording, so those are our choices. The ArmnetBench
-result covers eight tasks, and the timeout is approximated by each task's longest episode.
+The judge pass on our own rollouts rests on 8 failures. Its operating thresholds were chosen on the same 50 episodes.
+A single operator, the author, labelled them and was not blind to the policy. The threshold-free AUROCs do not depend
+on the threshold. Fresh rollouts scored at the frozen thresholds would confirm the operating points.
+{{own_turbo_fail}} of the {{own_fail}} failures in our 69 rollouts are TurboVLA's. Any score that reads the policy
+therefore gets the policy-identity null for free. The risk head is trained and tested on the same 50 episodes. Five
+folds by episode keep episodes from leaking, but tasks and policies leak. Robometer's per-episode scores stayed on an
+older machine. Its within-policy number therefore has no episode-bootstrap CI, and it is missing from the truncation
+analysis. A copy from that machine or a re-score of about ${{rbm_rescore}} would restore both. TOPReward's paper does
+not give its prefix count, frames per query or Yes/No wording, so those are our choices. The ArmnetBench result covers
+eight tasks. The timeout is approximated by each task's longest episode.
 
 ## 8 Conclusion
 
-Before evaluating a reward model as a failure detector, run episode length within policy on the same rows, and say how
-the episodes ended. On a benchmark that stops at a time limit, length was the detector to beat, and neither reward
-model beat it. On rollouts an operator stopped, length was useless, and what caught failures was a judge that saw the
-whole finished episode in the right input format.
+On ArmnetBench, where runs end at a time limit, episode length beat both reward models. On our operator-stopped
+rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
+a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
+ended.
 
 ## Appendix: from plain name to analysis
 
