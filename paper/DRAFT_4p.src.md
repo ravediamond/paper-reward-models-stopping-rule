@@ -17,11 +17,12 @@ detector has to beat depends on the dataset's stopping rule.
 
 ## 1 Introduction
 
-Papers that evaluate a reward model as a failure detector usually compare it with other learned detectors. When a
+Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. When a
 benchmark stops failed runs at a time limit, the length of an episode also encodes its outcome. The identity of the
-policy that ran can carry it too, and we call this the policy-identity null. When an operator stops each run by
-judgment, both signals are weaker. We call the way a dataset ends its episodes its *stopping rule*. None of the
-reward-model papers in our library reports the stopping rule or a length baseline.
+policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give
+out-of-distribution results). When the operator stops each run by his judgment, both signals are weaker. We call the
+way a dataset ends its episodes its stopping rule. None of the reward-model papers in our library reports the stopping
+rule or a length baseline.
 
 We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it.
 On them length is near chance, and a robot-trained judge passed its pre-registered threshold. The stopping rule
