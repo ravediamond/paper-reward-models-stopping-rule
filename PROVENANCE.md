@@ -107,3 +107,14 @@ Every file copied into this repository, with its source. Source commits at copy 
 | `repro/length-null/expected/robometer_scores.jsonl` | derived | | derived: first-run and rescore rows of the private Hub dataset ravediamond/g9a-ab-results (out/ab_top.jsonl, rescore/ab_top_rescore.jsonl; SHA256SUMS in the dataset), 2026-11-05 | 69340f0e67db |
 | `repro/length-null/expected/robometer_length.json` | derived | | derived: scripts/robometer_analysis.py | b5d74c032014 |
 | `repro/length-null/scripts/robometer_analysis.py` | derived | | derived: written for this repository | 4b46eddb81ec |
+| `repro/robometer-judge/PROTOCOL_FT.md` | road-to-robotics or derived | | road-to-robotics projects/vla-jepa-world-model/robometer/G9A_FT_PROTOCOL.md @ d87d509 (first commit 81ce516) | be08cdc4b9e7 |
+| `repro/robometer-judge/expected/ft_rows.jsonl` | road-to-robotics or derived | | derived: score_robometer_tiled.py on a vast A40, 2026-11-06; episodes 0 to 15 normalised from the first run (see the run notes) | 3d7397cfaea6 |
+| `repro/robometer-judge/expected/ft_rows_raw.jsonl` | road-to-robotics or derived | | as fetched from the instance | f64bf6833e01 |
+| `repro/robometer-judge/expected/ft_results.json` | road-to-robotics or derived | | derived: scripts/ft_analysis.py | fe9be31d1924 |
+| `repro/robometer-judge/expected/ft_episodes.txt` | road-to-robotics or derived | | road-to-robotics episodes_ft.txt | 0e8bea0ef193 |
+| `repro/robometer-judge/expected/ft_config_removed_keys.txt` | road-to-robotics or derived | | from the instance | 074a9b574f3a |
+| `repro/robometer-judge/expected/ft_timings.env` | road-to-robotics or derived | | from the instance | 12352a784654 |
+| `repro/robometer-judge/scripts/ft_analysis.py` | road-to-robotics or derived | | derived: written for this repository | 95164b9a0d14 |
+| `repro/robometer-judge/scripts/score_robometer_tiled.py` | road-to-robotics or derived | | road-to-robotics projects/vla-jepa-world-model/robometer @ a4b2501 | 27417b74a1e6 |
+| `repro/robometer-judge/scripts/remote_g9a_ft.sh` | road-to-robotics or derived | | road-to-robotics @ a4b2501 | 80dcf227086d |
+| `repro/robometer-judge/scripts/vast_g9a_ft.sh` | road-to-robotics or derived | | road-to-robotics @ a4b2501 | ba4c739f21ed |

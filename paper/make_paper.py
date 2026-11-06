@@ -162,6 +162,14 @@ def collect():
     for key, name in (("flora_s_ci", "G-flora: successes flagged"), ("w1_l2_ci", "W1-A L2 surprise: failures caught"),
                       ("r2_log_ci", "REAP v2 logistic: failures"), ("g9c3_fp_ci", "G9c-3: false positives")):
         lo, hi = cc[name]["wilson95"]; put(key, f"{100 * lo:.0f}–{100 * hi:.0f} %", a)
+    FTR = J(R / "robometer-judge/expected/ft_results.json"); fa = "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+    put("ft_pooled", FTR["pooled"]["auroc"], fa); put("ft_lo", FTR["pooled"]["ci95"][0], fa); put("ft_hi", FTR["pooled"]["ci95"][1], fa)
+    put("ft_within", FTR["within_policy"]["auroc"], fa); put("ft_w_lo", FTR["within_policy"]["ci95"][0], fa); put("ft_w_hi", FTR["within_policy"]["ci95"][1], fa)
+    put("ft_d", FTR["difference_within_policy"]["finetune_minus_length"], fa); put("ft_d_lo", FTR["difference_within_policy"]["ci95"][0], fa); put("ft_d_hi", FTR["difference_within_policy"]["ci95"][1], fa)
+    put("ft_prog", FTR["last_progress_pooled"]["auroc"], fa); put("ft_n", FTR["n_scored"], fa, "{:,d}")
+    put("ft_sub_n", FTR["subset_64"]["n"], fa, "{:d}"); put("ft_sub8", FTR["subset_64"]["p_succ_8_pooled"], fa); put("ft_sub64", FTR["subset_64"]["p_succ_64_pooled"], fa)
+    import csv as _csv
+    put("ft_train_n", sum(1 for _ in _csv.DictReader(open(R / "length-null/expected/armnetbench_episodes.csv"))), "repro/length-null/expected/armnetbench_episodes.csv, every ArmnetBench v0.1 episode (the fine-tune's single train split has the same count and labels, PROTOCOL_FT.md)", "{:,d}")
     C = J(R / "length-null/expected/robometer_length.json"); a = "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
     put("rbm_w_lo", C["within_policy"]["ci95"][0], a); put("rbm_w_hi", C["within_policy"]["ci95"][1], a)
     put("rbm_d_lo", C["difference_within_policy"]["ci95"][0], a); put("rbm_d_hi", C["difference_within_policy"]["ci95"][1], a)
@@ -185,6 +193,7 @@ def figures():
             ("length seen up to 50 % of T, within policy", f("t50_within"), f("t50_lo"), f("t50_hi"), sc.CATEGORICAL[2]),
             ("Robometer-4B zero-shot, pooled", f("rbm_pooled"), f("rbm_lo"), f("rbm_hi"), sc.CATEGORICAL[1]),
             ("Robometer-4B last progress, pooled (no CI)", f("rbm_prog"), f("rbm_prog"), f("rbm_prog"), sc.CATEGORICAL[1]),
+            ("Robometer-4B fine-tune, in-sample, pooled", f("ft_pooled"), f("ft_lo"), f("ft_hi"), sc.GREY),
             ("TOPReward (Qwen3-VL-8B), within policy", f("topr_within"), f("topr_lo"), f("topr_hi"), sc.ACCENT)]
     fig, ax = plt.subplots(figsize=(3.3, 2.0))
     ax.barh(range(len(rows)), [r[1] for r in rows], xerr=[[r[1] - r[2] for r in rows], [r[3] - r[1] for r in rows]],

@@ -9,8 +9,7 @@ appendix maps every analysis to its result file and protocol.*
 Reward models that score robot rollouts are also used as failure detectors. We compared two zero-shot reward models
 with plain episode length. On ArmnetBench, a public SO-101 benchmark where runs end at a time limit, length separates
 failure from success at AUROC {{len_within}} within policy. Failed runs are slow rather than cut off. Length observed
-only up to half of the longest episode still gives {{t50_within}}. Both reward models score below length, the better
-one at {{rbm_within}}. On our own rollouts an operator stopped each run by judgment. There length falls to
+only up to half of the longest episode still gives {{t50_within}}. Both zero-shot reward models score below length, the better one at {{rbm_within}}. The released fine-tune, scored on its own training episodes, reaches {{ft_within}}. On our own rollouts an operator stopped each run by judgment. There length falls to
 {{topr_own_len}}, and neither reward model beats the identity of the policy. A judge that sees the finished episode
 passes its threshold, at an operating point chosen in-sample. No mid-episode monitor reaches its bar. The baseline a
 detector has to beat depends on the dataset's stopping rule.
@@ -60,7 +59,7 @@ model's primary score before any score existed. For Robometer it is the success 
 success score of its paper. Two other scores from the same runs are in Table 1 as descriptive rows. They are higher,
 and still below length.
 
-Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down the within-policy column: no reward-model score reaches length.
+Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down the within-policy column: no zero-shot reward-model score reaches length, and the fine-tune row is in-sample.
 
 | signal | pooled | within policy |
 |---|---|---|
@@ -68,10 +67,13 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 | length seen up to 50 % of the longest run | — | {{t50_within}} ({{t50_lo}}–{{t50_hi}}) |
 | Robometer-4B, success probability | {{rbm_pooled}} ({{rbm_lo}}–{{rbm_hi}}) | {{rbm_within}} ({{rbm_w_lo}}–{{rbm_w_hi}}) |
 | Robometer-4B, last progress (descriptive) | {{rbm_prog}} (no CI) | — |
+| Robometer-4B fine-tuned on ArmnetBench, success probability (in-sample) | {{ft_pooled}} ({{ft_lo}}–{{ft_hi}}) | {{ft_within}} ({{ft_w_lo}}–{{ft_w_hi}}) |
 | TOPReward, success score | {{topr_pooled}} ({{topr_pooled_lo}}–{{topr_pooled_hi}}) | {{topr_within}} ({{topr_lo}}–{{topr_hi}}) |
 | TOPReward, Yes/No component (descriptive) | — | {{topr_yn_within}} |
 
 ![Failure AUROC on ArmnetBench: episode length against two zero-shot reward models. Length leads both, pooled and within policy (95 % CIs where available).](fig/armnetbench.png)
+
+We also scored the released ArmnetBench fine-tune of Robometer, `jesbu1/robometer-4b-fft-armnet-tiled`, since the obvious reply to a zero-shot result is to use it. Its model card lists a dataset of all {{ft_train_n}} ArmnetBench episodes, with no held-out split, as its training data. Every episode we score was therefore a training episode with its label, and the result is in-sample. On the {{ft_n}} rollouts it scores {{ft_pooled}} pooled and {{ft_within}} within policy, {{ft_d}} above length (paired CI {{ft_d_lo}} to {{ft_d_hi}}). This shows that the labels can be fit. It does not show that a reward model beats length on rollouts it has not seen. We gave it 8 frames spread over the 64 of each tiled video, the length it was trained on. Scoring all 64 frames on {{ft_sub_n}} episodes gives {{ft_sub64}} pooled against {{ft_sub8}} for 8 frames.
 
 ## 4 Length is more than the timeout
 
@@ -137,13 +139,13 @@ A single operator, the author, labelled them and was not blind to the policy. Th
 on the threshold. Fresh rollouts scored at the frozen thresholds would confirm the operating points.
 {{own_turbo_fail}} of the {{own_fail}} failures in our 69 rollouts are TurboVLA's. Any score that reads the policy
 therefore gets the policy-identity null for free. The risk head is trained and tested on the same 50 episodes. Five
-folds by episode keep episodes from leaking, but tasks and policies leak. Robometer's truncated scores are prefixes of one pass over the whole episode. A frame's value may depend on later frames, so a pass over a clip that ends at the cut could give a different number. The {{rbm_n_rescore}} episodes that ran out of memory in the first pass were scored in a second pass on a larger GPU, with every frame kept. TOPReward's paper does
+folds by episode keep episodes from leaking, but tasks and policies leak. The fine-tune comparison is in-sample, because the release has no held-out episodes, and its config needed three training-only keys removed to load in the pinned code. Robometer's truncated scores are prefixes of one pass over the whole episode. A frame's value may depend on later frames, so a pass over a clip that ends at the cut could give a different number. The {{rbm_n_rescore}} episodes that ran out of memory in the first pass were scored in a second pass on a larger GPU, with every frame kept. TOPReward's paper does
 not give its prefix count, frames per query or Yes/No wording, so those are our choices. The ArmnetBench result covers
 eight tasks. The timeout is approximated by each task's longest episode.
 
 ## 8 Conclusion
 
-On ArmnetBench, where runs end at a time limit, episode length beat both reward models. On our operator-stopped
+On ArmnetBench, where runs end at a time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
 rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
 a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
 ended.
@@ -156,6 +158,7 @@ Every number is recomputable from the repository; this table maps each analysis 
 |---|---|---|---|
 | length baseline, truncation | repro/length-null | length_armnetbench.json, counts_ci.json | LENGTH_PROTOCOL.md, frozen `1a69f30` |
 | Robometer on ArmnetBench | repro/robometer-judge, repro/length-null | g9a_ab_complete.json, robometer_length.json | PROTOCOL.md (primary score fixed there); length-null amendment 2026-11-05 |
+| Robometer fine-tune on ArmnetBench (in-sample) | repro/robometer-judge | ft_rows.jsonl, ft_results.json | PROTOCOL_FT.md (frozen before any score; deviations numbered) |
 | Robometer and length on own rollouts | repro/robometer-judge | g9a_own.json | PROTOCOL.md |
 | colour judge | repro/robometer-judge | g9c3_test_results.json | PROTOCOL.md |
 | TOPReward, both datasets | repro/topreward | topreward.json, own_rollout_labels.csv | TOPREWARD_PROTOCOL.md, `6241570` |

@@ -26,7 +26,7 @@ Expected: 69 judged, 0 false positives, 5 false negatives, exactly episodes **7,
 rollouts: the other 19 are M1 sessions that are not in the public dataset (empty catalog here).
 **Checked 2026-10-26 on an Orin NX (CPU, lerobot-jetson container): pass, same five episodes, 177.7 s.**
 
-Robometer scoring needs a >= 48 GB GPU: L0 only here.
+Robometer scoring needs a >= 48 GB GPU: L0 only here (scores recovered from the Hub for the zero-shot run, and the fine-tune rows are stored in expected/ft_rows.jsonl).
 
 ## L2: rerun on hardware
 

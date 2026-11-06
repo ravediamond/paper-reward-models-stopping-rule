@@ -39,6 +39,66 @@
   "value": "1\u201316 %",
   "anchor": "repro/length-null/expected/counts_ci.json, Wilson 95 %"
  },
+ "ft_d": {
+  "value": "0.052",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_d_hi": {
+  "value": "0.067",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_d_lo": {
+  "value": "0.039",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_hi": {
+  "value": "0.996",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_lo": {
+  "value": "0.991",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_n": {
+  "value": "2,047",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_pooled": {
+  "value": "0.994",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_prog": {
+  "value": "0.989",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_sub64": {
+  "value": "0.995",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_sub8": {
+  "value": "0.989",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_sub_n": {
+  "value": "160",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_train_n": {
+  "value": "2,499",
+  "anchor": "repro/length-null/expected/armnetbench_episodes.csv, every ArmnetBench v0.1 episode (the fine-tune's single train split has the same count and labels, PROTOCOL_FT.md)"
+ },
+ "ft_w_hi": {
+  "value": "0.997",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_w_lo": {
+  "value": "0.992",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
+ "ft_within": {
+  "value": "0.994",
+  "anchor": "repro/robometer-judge/expected/ft_results.json (G9A_FT protocol; in-sample: every evaluated episode is a training episode of the fine-tune)"
+ },
  "g9c3_acc": {
   "value": "94.3",
   "anchor": "repro/robometer-judge/expected/g9c3_test_results.json, G9c-3"
