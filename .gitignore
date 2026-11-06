@@ -2,3 +2,4 @@ paper/*.aux
 paper/*.log
 __pycache__/
 paper/shisso_commit.tex
+polish/last_try_*.json

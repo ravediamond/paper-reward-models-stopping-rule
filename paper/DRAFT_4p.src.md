@@ -16,12 +16,7 @@ detector has to beat depends on the dataset's stopping rule.
 
 ## 1 Introduction
 
-Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. When a
-benchmark stops failed runs at a time limit, the length of an episode also encodes its outcome. The identity of the
-policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give
-out-of-distribution results). When the operator stops each run by his judgment, both signals are weaker. We call the
-way a dataset ends its episodes its stopping rule. None of the reward-model papers in our library reports the stopping
-rule or a length baseline.
+Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. On ArmnetBench, which stops failed runs at a time limit, the length of an episode also encodes its outcome. The identity of the policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give out-of-distribution results). On our own rollouts the operator stopped each run by his judgment, and both signals are weaker. The way a dataset ends its episodes is its stopping rule. None of the reward-model papers in our library reports the stopping rule or a length baseline.
 
 We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it. Length is near chance on them. A robot-trained judge passed its pre-registered threshold on them. What separates the two results is the stopping rule, so it became the subject of the paper.
 
@@ -103,13 +98,7 @@ no robot fine-tune. On the same input it also passes, with AUROC {{q27_auc}} ({{
 8 at {{q27_s}} of 42. The input format mattered more than the fine-tune. Qwen3.5-9B [@qwen35] flags {{q9_s}} successes
 and fails. Gemini 3.8 Flash [@gemini38] fails by one false alarm.
 
-The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor
-reaches it on these 50 rollouts (Fig. 3). The surprise of a separate world model, trained in the LeWorldModel recipe
-[@lewm], catches {{w1_l2}} of 8 at {{w1_l2_fi}} of 42 (AUROC {{w1_l2_auc}}). A Gemini sliding-window judge catches
-{{tau_caught}}. We also built an action-conditioned risk head on the world model's latent. Its first version reached
-AUROC {{r1_log_auc}}. It read elapsed time, so we withdrew that result. We pre-registered a second version without
-time or length. It catches {{r2_log_c}} of 8 at {{r2_log_fi}} of 42. Its AUROC is {{r2_log_auc}}, and {{r2_sh_auc}}
-with shuffled actions. The MLP variant catches {{r2_mlp_c}} of 8 and flags {{r2_mlp_fi}} of 42.
+The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 3). The surprise of a separate world model, trained in the LeWorldModel recipe [@lewm], catches {{w1_l2}} of 8 at {{w1_l2_fi}} of 42 (AUROC {{w1_l2_auc}}). A Gemini sliding-window judge catches {{tau_caught}}. The first action-conditioned risk head on the world model's latent reached AUROC {{r1_log_auc}}. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches {{r2_log_c}} of 8 at {{r2_log_fi}} of 42. Its AUROC is {{r2_log_auc}}, and {{r2_sh_auc}} with shuffled actions. The MLP variant catches {{r2_mlp_c}} of 8 and flags {{r2_mlp_fi}} of 42.
 
 Table 2: Judges and monitors on the 50 operator-stopped rollouts (42 successes, 8 failures). Judges see the finished episode; monitors are held to ≥ 5/8 caught at ≤ 1/20 false interventions.
 
