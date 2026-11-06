@@ -24,13 +24,15 @@ We measured length on ArmnetBench and on our own rollouts. The length analyses w
 number existed. We compared length with two zero-shot reward models, Robometer and TOPReward
 . On our 88 operator-stopped rollouts we also compared it with every judge and monitor we had run.
 
+![Fig. 1 — what the baseline is depends on how the episodes ended. ArmnetBench (time limit): length 0.942 within policy, both zero-shot reward models below it, the fine-tune only in-sample. Our operator-stopped rollouts: length 0.52, chance; a whole-episode judge 1.00; no mid-episode monitor reaches its bar.](fig/stopping_rule.png)
+
 ## 2 Data and labels
 
 ArmnetBench v0.1 has 8 tasks and 7 policies on the SO-101. We use its 2,047 policy rollouts that have a success or failure class (515 successes, 1,532 failures) and leave out the teleoperated episodes. One task, pushing a Displayport cable (270 rollouts), has rollouts of a single class, so it has no per-task AUROC. Our own data are 88 labelled bowls-task episodes on one SO-101 arm with a Jetson Orin NX. Every monitor gate used the same 50-episode subset (42 successes, 8 failures). The author was the operator, stopped each run and labelled it at rest, and was not blind to the policy.
 
 ## 3 The length baseline
 
-On ArmnetBench, episode length is a strong failure detector within each policy (Table 1, Fig. 1). Pooled over policies
+On ArmnetBench, episode length is a strong failure detector within each policy (Table 1, Fig. 2). Pooled over policies
 it reaches 0.938. Within each policy it ranges from 0.91 to 0.96. Pair-weighted, the
 within-policy value is 0.942, with a CI of 0.927–0.956.
 
@@ -72,16 +74,17 @@ We also scored the released ArmnetBench fine-tune of Robometer, `jesbu1/robomete
 
 ## 4 Length is more than the timeout
 
-Only 8.7 % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, 88 % of failures are still running, and only 19 % of successes are. Length observed up to that cut gives 0.851 within policy (Fig. 2). The CI is 0.829–0.873. TOPReward on frames up to the same cut reaches 0.667. Robometer's success probability at the last frame before the cut gives 0.814 within policy (CI 0.787–0.839), which is below length at that cut. At a quarter of the longest episode the order is the other way, 0.706 for Robometer against 0.617 for length, and by three quarters length is ahead again, 0.931 against 0.821. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
+Only 8.7 % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, 88 % of failures are still running, and only 19 % of successes are. Length observed up to that cut gives 0.851 within policy (Fig. 3). The CI is 0.829–0.873. TOPReward on frames up to the same cut reaches 0.667. Robometer's success probability at the last frame before the cut gives 0.814 within policy (CI 0.787–0.839), which is below length at that cut. At a quarter of the longest episode the order is the other way, 0.706 for Robometer against 0.617 for length, and by three quarters length is ahead again, 0.931 against 0.821. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
 
 ![Length observed up to a fraction of the task's longest episode, AUROC within policy: most of the signal is there by half the episode (band: 95 % CI).](fig/truncation.png)
 
-On our own operator-stopped rollouts, length is at chance. It gives 0.56 on the 69 rollouts
-TOPReward scored and 0.52 on all 88. Here the policy-identity null is the baseline to beat.
-17 of the 25 failures in the 69 come from one policy, TurboVLA.
-Neither reward model beats policy identity. TOPReward scores 0.82 (CI 0.70–0.93), and
-policy identity alone 0.87. On the 50 episodes without TurboVLA, TOPReward scores
-0.78. Robometer scores 0.577 on all 88, and policy identity 0.878.
+> **Own rollouts.** On our own operator-stopped rollouts, length is at chance. It gives 0.56 on the 69 rollouts
+> TOPReward scored and 0.52 on all 88. Here the policy-identity null is the baseline to beat.
+> 17 of the 25 failures in the 69 come from one policy, TurboVLA.
+> Neither reward model beats policy identity. TOPReward scores 0.82 (CI 0.70–0.93), and
+> policy identity alone 0.87. On the 50 episodes without TurboVLA, TOPReward scores
+> 0.78. Robometer scores 0.577 on all 88, and policy identity 0.878.
+
 
 ## 5 Judges and monitors on our rollouts
 
@@ -98,7 +101,7 @@ no robot fine-tune. On the same input it also passes, with AUROC 0.91 (0.78–1.
 8 at 2 of 42. The input format mattered more than the fine-tune. Qwen3.5-9B flags 16 successes
 and fails. Gemini 3.8 Flash fails by one false alarm.
 
-The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 3). The surprise of a separate world model, trained in the LeWorldModel recipe, catches 2 of 8 at 2 of 42 (AUROC 0.86). A Gemini sliding-window judge catches 0. The first action-conditioned risk head on the world model's latent reached AUROC 0.93. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches 3 of 8 at 5 of 42. Its AUROC is 0.79, and 0.71 with shuffled actions. The MLP variant catches 6 of 8 and flags 13 of 42.
+The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 4). The surprise of a separate world model, trained in the LeWorldModel recipe, catches 2 of 8 at 2 of 42 (AUROC 0.86). A Gemini sliding-window judge catches 0. The first action-conditioned risk head on the world model's latent reached AUROC 0.93. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches 3 of 8 at 5 of 42. Its AUROC is 0.79, and 0.71 with shuffled actions. The MLP variant catches 6 of 8 and flags 13 of 42.
 
 Table 2: Judges and monitors on the 50 operator-stopped rollouts (42 successes, 8 failures). Judges see the finished episode; monitors are held to ≥ 5/8 caught at ≤ 1/20 false interventions.
 
@@ -134,10 +137,11 @@ eight tasks. The timeout is approximated by each task's longest episode.
 
 ## 8 Conclusion
 
-On ArmnetBench, where runs end at a time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
-rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
-a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
-ended.
+> **Conclusion.** On ArmnetBench, where runs end at a time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
+> rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
+> a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
+> ended.
+
 
 ## Appendix: from plain name to analysis
 

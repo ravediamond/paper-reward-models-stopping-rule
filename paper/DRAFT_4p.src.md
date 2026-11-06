@@ -24,13 +24,15 @@ We measured length on ArmnetBench [@armnetbench] and on our own rollouts. The le
 number existed. We compared length with two zero-shot reward models, Robometer [@robometer] and TOPReward
 [@topreward]. On our {{own_n}} operator-stopped rollouts we also compared it with every judge and monitor we had run.
 
+![Fig. 1 — what the baseline is depends on how the episodes ended. ArmnetBench (time limit): length {{len_within}} within policy, both zero-shot reward models below it, the fine-tune only in-sample. Our operator-stopped rollouts: length {{own_len}}, chance; a whole-episode judge {{flora_auc}}; no mid-episode monitor reaches its bar.](fig/stopping_rule.png)
+
 ## 2 Data and labels
 
 ArmnetBench v0.1 [@armnetbench] has 8 tasks and {{n_pol}} policies on the SO-101. We use its {{ab_n}} policy rollouts that have a success or failure class ({{ab_ok}} successes, {{ab_fail}} failures) and leave out the teleoperated episodes. One task, pushing a Displayport cable ({{dp_n}} rollouts), has rollouts of a single class, so it has no per-task AUROC. Our own data are 88 labelled bowls-task episodes on one SO-101 arm with a Jetson Orin NX. Every monitor gate used the same 50-episode subset (42 successes, 8 failures). The author was the operator, stopped each run and labelled it at rest, and was not blind to the policy.
 
 ## 3 The length baseline
 
-On ArmnetBench, episode length is a strong failure detector within each policy (Table 1, Fig. 1). Pooled over policies
+On ArmnetBench, episode length is a strong failure detector within each policy (Table 1, Fig. 2). Pooled over policies
 it reaches {{len_pooled}}. Within each policy it ranges from {{len_pol_min}} to {{len_pol_max}}. Pair-weighted, the
 within-policy value is {{len_within}}, with a CI of {{len_within_lo}}–{{len_within_hi}}.
 
@@ -72,16 +74,17 @@ We also scored the released ArmnetBench fine-tune of Robometer, `jesbu1/robomete
 
 ## 4 Length is more than the timeout
 
-Only {{hit_fail}} % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 2). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Robometer's success probability at the last frame before the cut gives {{rbm_t50}} within policy (CI {{rbm_t50_lo}}–{{rbm_t50_hi}}), which is below length at that cut. At a quarter of the longest episode the order is the other way, {{rbm_t25}} for Robometer against {{len_t25}} for length, and by three quarters length is ahead again, {{len_t75}} against {{rbm_t75}}. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
+Only {{hit_fail}} % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 3). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Robometer's success probability at the last frame before the cut gives {{rbm_t50}} within policy (CI {{rbm_t50_lo}}–{{rbm_t50_hi}}), which is below length at that cut. At a quarter of the longest episode the order is the other way, {{rbm_t25}} for Robometer against {{len_t25}} for length, and by three quarters length is ahead again, {{len_t75}} against {{rbm_t75}}. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
 
 ![Length observed up to a fraction of the task's longest episode, AUROC within policy: most of the signal is there by half the episode (band: 95 % CI).](fig/truncation.png)
 
-On our own operator-stopped rollouts, length is at chance. It gives {{topr_own_len}} on the {{topr_own_n}} rollouts
-TOPReward scored and {{own_len}} on all {{own_n}}. Here the policy-identity null is the baseline to beat.
-{{own_turbo_fail}} of the {{own_fail}} failures in the {{topr_own_n}} come from one policy, TurboVLA [@turbovla].
-Neither reward model beats policy identity. TOPReward scores {{topr_own}} (CI {{topr_own_lo}}–{{topr_own_hi}}), and
-policy identity alone {{topr_own_pol}}. On the {{topr_own_nt_n}} episodes without TurboVLA, TOPReward scores
-{{topr_own_nt}}. Robometer scores {{own_rbm}} on all {{own_n}}, and policy identity {{own_rbm_pol}}.
+> **Own rollouts.** On our own operator-stopped rollouts, length is at chance. It gives {{topr_own_len}} on the {{topr_own_n}} rollouts
+> TOPReward scored and {{own_len}} on all {{own_n}}. Here the policy-identity null is the baseline to beat.
+> {{own_turbo_fail}} of the {{own_fail}} failures in the {{topr_own_n}} come from one policy, TurboVLA [@turbovla].
+> Neither reward model beats policy identity. TOPReward scores {{topr_own}} (CI {{topr_own_lo}}–{{topr_own_hi}}), and
+> policy identity alone {{topr_own_pol}}. On the {{topr_own_nt_n}} episodes without TurboVLA, TOPReward scores
+> {{topr_own_nt}}. Robometer scores {{own_rbm}} on all {{own_n}}, and policy identity {{own_rbm_pol}}.
+
 
 ## 5 Judges and monitors on our rollouts
 
@@ -98,7 +101,7 @@ no robot fine-tune. On the same input it also passes, with AUROC {{q27_auc}} ({{
 8 at {{q27_s}} of 42. The input format mattered more than the fine-tune. Qwen3.5-9B [@qwen35] flags {{q9_s}} successes
 and fails. Gemini 3.8 Flash [@gemini38] fails by one false alarm.
 
-The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 3). The surprise of a separate world model, trained in the LeWorldModel recipe [@lewm], catches {{w1_l2}} of 8 at {{w1_l2_fi}} of 42 (AUROC {{w1_l2_auc}}). A Gemini sliding-window judge catches {{tau_caught}}. The first action-conditioned risk head on the world model's latent reached AUROC {{r1_log_auc}}. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches {{r2_log_c}} of 8 at {{r2_log_fi}} of 42. Its AUROC is {{r2_log_auc}}, and {{r2_sh_auc}} with shuffled actions. The MLP variant catches {{r2_mlp_c}} of 8 and flags {{r2_mlp_fi}} of 42.
+The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 4). The surprise of a separate world model, trained in the LeWorldModel recipe [@lewm], catches {{w1_l2}} of 8 at {{w1_l2_fi}} of 42 (AUROC {{w1_l2_auc}}). A Gemini sliding-window judge catches {{tau_caught}}. The first action-conditioned risk head on the world model's latent reached AUROC {{r1_log_auc}}. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches {{r2_log_c}} of 8 at {{r2_log_fi}} of 42. Its AUROC is {{r2_log_auc}}, and {{r2_sh_auc}} with shuffled actions. The MLP variant catches {{r2_mlp_c}} of 8 and flags {{r2_mlp_fi}} of 42.
 
 Table 2: Judges and monitors on the 50 operator-stopped rollouts (42 successes, 8 failures). Judges see the finished episode; monitors are held to ≥ 5/8 caught at ≤ 1/20 false interventions.
 
@@ -134,10 +137,11 @@ eight tasks. The timeout is approximated by each task's longest episode.
 
 ## 8 Conclusion
 
-On ArmnetBench, where runs end at a time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
-rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
-a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
-ended.
+> **Conclusion.** On ArmnetBench, where runs end at a time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
+> rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
+> a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
+> ended.
+
 
 ## Appendix: from plain name to analysis
 

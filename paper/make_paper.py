@@ -238,6 +238,40 @@ def figures():
         ax.spines[s].set_visible(False)
     fig.tight_layout(); fig.savefig(FIG / "own_monitors.pdf"); fig.savefig(FIG / "own_monitors.png"); plt.close(fig)
 
+    # design layer: the stopping-rule teaser and the chain that makes every number
+    from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+    GREEN, AMBER, RED = sc.CATEGORICAL[2], sc.CATEGORICAL[1], sc.CATEGORICAL[3]
+    fig, ax = plt.subplots(figsize=(7.0, 1.75)); ax.set_xlim(0, 100); ax.set_ylim(0, 22); ax.axis("off")
+    lanes = [(12.0, "ArmnetBench, {} rollouts".format(N["ab_n"]), "runs end at a time limit;\nfailed runs are slow", "episode length alone\nAUROC {} within policy".format(N["len_within"]), GREEN,
+              "zero-shot reward models {} and below,\nthe fine-tune {} on its own training episodes".format(N["rbm_within"], N["ft_within"]), RED),
+             (1.0, "our rollouts, {} operator-stopped".format(N["own_n"]), "the operator stops each run,\nfailed or not", "episode length alone\nAUROC {}, chance".format(N["own_len"]), AMBER,
+              "whole-episode judge AUROC {};\nno mid-episode monitor reaches its bar".format(N["flora_auc"]), GREEN)]
+    cols = [(1.0, 24.0), (30.0, 22.0), (58.0, 41.0)]
+    for y, head, a, b, cb, c, cc in lanes:
+        for (x, w), txt, col in zip(cols, [a, b, c], ["#8A90A0", cb, cc]):
+            ax.add_patch(FancyBboxPatch((x, y), w, 7.6, boxstyle="round,pad=0,rounding_size=1.0", fc="white", ec=col, lw=1.7))
+            ax.text(x + w / 2, y + 3.8, txt, ha="center", va="center", fontsize=5.8, linespacing=1.2)
+        ax.text(1.0, y + 8.9, head, fontsize=6.2, fontweight="bold", color=sc.ACCENT)
+        for x0, x1 in [(25.0, 30.0), (52.0, 58.0)]:
+            ax.add_patch(FancyArrowPatch((x0, y + 3.8), (x1, y + 3.8), arrowstyle="-|>", mutation_scale=6, lw=1.0, color=sc.ACCENT))
+    for i, (lab, c) in enumerate([("passes its bar", GREEN), ("chance or in-sample only", AMBER), ("below the length baseline", RED)]):
+        lx = 62 + i * 13.0; ax.add_patch(FancyBboxPatch((lx, 20.4), 1.4, 1.4, boxstyle="round,pad=0", fc=c, ec="none")); ax.text(lx + 2.1, 21.1, lab, fontsize=5.2, va="center")
+    fig.subplots_adjust(0, 0, 1, 1); fig.savefig(FIG / "stopping_rule.pdf"); fig.savefig(FIG / "stopping_rule.png", dpi=200); plt.close(fig)
+
+    # the chain that makes every number (same in all four papers)
+    fig, ax = plt.subplots(figsize=(7.0, 1.05)); ax.set_xlim(0, 100); ax.set_ylim(0, 15); ax.axis("off")
+    steps = [("1  bar committed", "protocol commit\nbefore any number"), ("2  run", "rows stored in\nrepro/<exp>/expected"), ("3  result committed", "result commit\nafter the bar"),
+             ("4  L0 recompute", "make l0: every number\nfrom the stored rows"), ("5  paper", "numbers.json: value\nand its anchor")]
+    bw, gap = 16.2, 4.0
+    for i, (a, b) in enumerate(steps):
+        xx = 1 + i * (bw + gap); ax.add_patch(FancyBboxPatch((xx, 3), bw, 10, boxstyle="round,pad=0,rounding_size=1.2", fc="#EDF2FB" if i != 4 else sc.ACCENT, ec=sc.ACCENT, lw=1.0))
+        ax.text(xx + bw / 2, 10.3, a, ha="center", va="center", fontsize=6.4, fontweight="bold", color="white" if i == 4 else sc.ACCENT)
+        ax.text(xx + bw / 2, 6.0, b, ha="center", va="center", fontsize=5.6, color="white" if i == 4 else "black", linespacing=1.15)
+        if i < 4:
+            ax.add_patch(FancyArrowPatch((xx + bw, 8), (xx + bw + gap, 8), arrowstyle="-|>", mutation_scale=6, lw=1.0, color=sc.ACCENT))
+    ax.text(50, 0.7, "make check regenerates the paper from the stored rows and fails on any difference", ha="center", fontsize=5.8, color=sc.DARKGREY, style="italic")
+    fig.subplots_adjust(0, 0, 1, 1); fig.savefig(FIG / "number_chain.pdf"); fig.savefig(FIG / "number_chain.png", dpi=200); plt.close(fig)
+
 
 def render(src, dst):
     t = (HERE / src).read_text(); missing = set(re.findall(r"\{\{(\w+)\}\}", t)) - N.keys()
