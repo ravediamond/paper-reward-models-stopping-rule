@@ -145,7 +145,7 @@ eight tasks. The timeout is approximated by each task's longest episode.
 
 ## Appendix: from plain name to analysis
 
-Every number is recomputable from the repository; this table maps each analysis to its files.
+Every number is recomputable from the repository; this table maps each analysis to its files. The frozen commits named in the last column are in ravediamond/road-to-robotics, not in this repository's history; the protocols are copied here verbatim.
 
 | analysis | repro folder | expected files | protocol |
 |---|---|---|---|
