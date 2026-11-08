@@ -17,7 +17,7 @@ only up to half of the longest episode still gives 0.851. Both zero-shot reward 
 passes its threshold, at an operating point chosen in-sample. No mid-episode monitor reaches its bar. The baseline a
 detector has to beat depends on the dataset's stopping rule.}{\textbf{Code and rows:} \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}\quad\textbf{Reproduce:} \texttt{make check}\quad\textbf{Protocols:} \texttt{repro/*/PROTOCOL.md}. Every number carries its source file and the commit of its protocol, which is in ravediamond/road-to-robotics; the protocols are copied here verbatim.}\vspace{4pt}]
 \section{Introduction}
-Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. On ArmnetBench, where the operator stopped each rollout with no set time limit, successes cut at completion and failures run on, the length of an episode also encodes its outcome. The identity of the policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give out-of-distribution results). On our own rollouts the operator stopped each run by his judgment, and both signals are weaker. The way a dataset ends its episodes is its stopping rule. None of the reward-model papers in our library reports the stopping rule or a length baseline.
+Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. On ArmnetBench the operator stopped each rollout and there was no set time limit. Successes are cut at completion and failures run on, and the length of an episode also encodes its outcome. The identity of the policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give out-of-distribution results). On our own rollouts the operator stopped each run by his judgment, and both signals are weaker. The way a dataset ends its episodes is its stopping rule. None of the reward-model papers in our library reports the stopping rule or a length baseline.
 
 We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it. Length is near chance on them. A robot-trained judge passed its pre-registered threshold on them. What differs between the two results is how the episodes ended, so the stopping rule became the subject of the paper.
 
@@ -99,17 +99,13 @@ policy identity alone 0.87. On the 50 episodes without TurboVLA, TOPReward score
 Table 2 gives each judge and monitor a threshold-free AUROC where one is defined. It also gives failures caught and
 successes flagged at the operating point. For the judges at rest, that point is chosen in-sample.
 
-We first ran a deterministic top-camera check (colour masks and geometry, no learning). It is right on 94.3 \%
-of judged episodes. It has 0 false positives (Wilson 0–13 %) and 5 false negatives. We
-then gave Flora-Rewarder-27B \citep{flora27b} a 64-frame two-view clip and NVIDIA's prompt. It reaches a threshold-free
-AUROC of 1.00 (bootstrap CI 1.00--1.00). At its in-sample operating point it flags 8
-of 8 failures at 2 of 42 successes (Wilson on the false alarms 1–16 %). The pre-registered bar was
+We first ran a deterministic top-camera check, with colour masks and geometry and no learning. It is right on 94.3 \% of judged episodes. It has 0 false positives and 5 false negatives. The Wilson interval on the false positives is 0–13 %. We
+then gave Flora-Rewarder-27B \citep{flora27b} a 64-frame two-view clip and NVIDIA's prompt. Its threshold-free AUROC is 1.00. The bootstrap CI is 1.00--1.00. At its in-sample operating point it flags 8 of 8 failures at 2 of 42 successes. The Wilson interval on those false alarms is 1–16 %. The pre-registered bar was
 at least 6 of 8 failures at no more than 2 of 42 successes, so it passes. Its base model, Qwen3.5-27B \citep{qwen35}, has
-no robot fine-tune. On the same input it also passes, with AUROC 0.91 (0.78--1.00) and 7 of
-8 at 2 of 42. The input format mattered more than the fine-tune. Qwen3.5-9B \citep{qwen35} flags 16 successes
+no robot fine-tune. On the same input it also passes, with AUROC 0.91 and 7 of 8 at 2 of 42. The interval on that AUROC is 0.78--1.00. The input format mattered more than the fine-tune. Qwen3.5-9B \citep{qwen35} flags 16 successes
 and fails. Gemini 3.8 Flash \citep{gemini38} fails by one false alarm.
 
-The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 4). The surprise of a separate world model, trained in the LeWorldModel recipe \citep{lewm}, catches 2 of 8 at 2 of 42 (AUROC 0.86). A Gemini sliding-window judge catches 0. The first action-conditioned risk head on the world model's latent reached AUROC 0.93. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches 3 of 8 at 5 of 42. Its AUROC is 0.79, and 0.71 with shuffled actions. The MLP variant catches 6 of 8 and flags 13 of 42.
+The bar for mid-episode monitors is at least 5 of 8 failures at no more than 1 of 20 false interventions. No monitor reaches it on these 50 rollouts (Fig. 4). The surprise of a separate world model, trained in the LeWorldModel recipe \citep{lewm}, catches 2 of 8 at 2 of 42. Its AUROC is 0.86. A Gemini sliding-window judge catches 0. The first action-conditioned risk head on the world model's latent reached AUROC 0.93. It read elapsed time, so we withdrew that result. We pre-registered a second version without time or length. It catches 3 of 8 at 5 of 42. Its AUROC is 0.79, and 0.71 with shuffled actions. The MLP variant catches 6 of 8 and flags 13 of 42.
 
 
 \begin{table*}[t]\centering\scriptsize
