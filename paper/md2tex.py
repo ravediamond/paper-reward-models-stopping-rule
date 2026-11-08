@@ -69,6 +69,13 @@ def convert(block_lines):
                 i += 1
             out += table(rows, cap); cap = ""
             continue
+        elif l.startswith("> "):  # "> **Label.** text" blockquote (may continue over several "> " lines) -> shissofinding
+            q = []
+            while i < len(block_lines) and block_lines[i].startswith("> "):
+                q.append(block_lines[i][2:]); i += 1
+            mm = re.match(r"\*\*(.+?)\*\*\s*(.*)", "\n".join(q), re.S)
+            out += "\\begin{shissofinding}[" + esc(mm.group(1)) + "]\n" + esc(mm.group(2)) + "\n\\end{shissofinding}\n"
+            continue
         elif m := re.match(r"!\[(.*)\]\((.*)\)", l):
             out += ("\\begin{figure}[t]\\centering\\includegraphics[width=\\columnwidth]{%s}\\caption{%s}\\end{figure}\n\n"
                     % (m.group(2).replace(".png", ".pdf"), esc(m.group(1))))
