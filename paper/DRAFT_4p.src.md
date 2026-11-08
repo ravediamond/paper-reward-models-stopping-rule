@@ -7,7 +7,7 @@ appendix maps every analysis to its result file and protocol.*
 ## Abstract
 
 Reward models that score robot rollouts are also used as failure detectors. We compared two zero-shot reward models
-with plain episode length. On ArmnetBench, a public SO-101 benchmark where runs end at a time limit, length separates
+with plain episode length. On ArmnetBench, a public SO-101 benchmark whose operators stopped each rollout (it sets no time limit), length separates
 failure from success at AUROC {{len_within}} within policy. Failed runs are slow rather than cut off. Length observed
 only up to half of the longest episode still gives {{t50_within}}. Both zero-shot reward models score below length, the better one at {{rbm_within}}. The released fine-tune, scored on its own training episodes, reaches {{ft_within}}. On our own rollouts an operator stopped each run by judgment. There length falls to
 {{topr_own_len}}, and neither reward model beats the identity of the policy. A judge that sees the finished episode
@@ -16,15 +16,15 @@ detector has to beat depends on the dataset's stopping rule.
 
 ## 1 Introduction
 
-Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. On ArmnetBench, which stops failed runs at a time limit, the length of an episode also encodes its outcome. The identity of the policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give out-of-distribution results). On our own rollouts the operator stopped each run by his judgment, and both signals are weaker. The way a dataset ends its episodes is its stopping rule. None of the reward-model papers in our library reports the stopping rule or a length baseline.
+Papers that evaluate a reward model as a failure detector normally compare it with other learned detectors. On ArmnetBench, where the operator stopped each rollout with no set time limit, successes cut at completion and failures run on, the length of an episode also encodes its outcome. The identity of the policy that ran can carry it too, and we call this the policy-identity null (mainly with models that give out-of-distribution results). On our own rollouts the operator stopped each run by his judgment, and both signals are weaker. The way a dataset ends its episodes is its stopping rule. None of the reward-model papers in our library reports the stopping rule or a length baseline.
 
-We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it. Length is near chance on them. A robot-trained judge passed its pre-registered threshold on them. What separates the two results is the stopping rule, so it became the subject of the paper.
+We started with a narrower claim, that elapsed time is the reward model to beat. Our own rollouts did not support it. Length is near chance on them. A robot-trained judge passed its pre-registered threshold on them. What differs between the two results is how the episodes ended, so the stopping rule became the subject of the paper.
 
 We measured length on ArmnetBench [@armnetbench] and on our own rollouts. The length analyses were frozen before any
 number existed. We compared length with two zero-shot reward models, Robometer [@robometer] and TOPReward
 [@topreward]. On our {{own_n}} operator-stopped rollouts we also compared it with every judge and monitor we had run.
 
-![Fig. 1 — what the baseline is depends on how the episodes ended. ArmnetBench (time limit): length {{len_within}} within policy, both zero-shot reward models below it, the fine-tune only in-sample. Our operator-stopped rollouts: length {{own_len}}, chance; a whole-episode judge {{flora_auc}}; no mid-episode monitor reaches its bar.](fig/stopping_rule.png)
+![Fig. 1 — what the baseline is depends on how the episodes ended. ArmnetBench (operator-stopped, no set limit): length {{len_within}} within policy, both zero-shot reward models below it, the fine-tune only in-sample. Our operator-stopped rollouts: length {{own_len}}, chance; a whole-episode judge {{flora_auc}}; no mid-episode monitor reaches its bar.](fig/stopping_rule.png)
 
 ## 2 Data and labels
 
@@ -72,9 +72,9 @@ Table 1: ArmnetBench, failure AUROC with 95 % episode-bootstrap CIs. Read down t
 
 We also scored the released ArmnetBench fine-tune of Robometer, `jesbu1/robometer-4b-fft-armnet-tiled`, since the obvious reply to a zero-shot result is to use it. Its model card lists a dataset of all {{ft_train_n}} ArmnetBench episodes, with no held-out split, as its training data. Every episode we score was therefore a training episode with its label, and the result is in-sample. On the {{ft_n}} rollouts it scores {{ft_pooled}} pooled and {{ft_within}} within policy, {{ft_d}} above length (paired CI {{ft_d_lo}} to {{ft_d_hi}}). This shows that the labels can be fit. It does not show that a reward model beats length on rollouts it has not seen. We gave it 8 frames spread over the 64 of each tiled video, the length it was trained on. Scoring all 64 frames on {{ft_sub_n}} episodes gives {{ft_sub64}} pooled against {{ft_sub8}} for 8 frames.
 
-## 4 Length is more than the timeout
+## 4 Length is more than the longest episode
 
-Only {{hit_fail}} % of failures run as long as the task's longest episode, which we take as its timeout. At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 3). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Robometer's success probability at the last frame before the cut gives {{rbm_t50}} within policy (CI {{rbm_t50_lo}}–{{rbm_t50_hi}}), which is below length at that cut. At a quarter of the longest episode the order is the other way, {{rbm_t25}} for Robometer against {{len_t25}} for length, and by three quarters length is ahead again, {{len_t75}} against {{rbm_t75}}. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow, not timed out. Both readings fixed in the protocol hold.
+Only {{hit_fail}} % of failures run as long as the task's longest episode, which we use as a reference length (the benchmark sets no time limit). At half that length, {{t50_run_fail}} % of failures are still running, and only {{t50_run_ok}} % of successes are. Length observed up to that cut gives {{t50_within}} within policy (Fig. 3). The CI is {{t50_lo}}–{{t50_hi}}. TOPReward on frames up to the same cut reaches {{topr_cap}}. Robometer's success probability at the last frame before the cut gives {{rbm_t50}} within policy (CI {{rbm_t50_lo}}–{{rbm_t50_hi}}), which is below length at that cut. At a quarter of the longest episode the order is the other way, {{rbm_t25}} for Robometer against {{len_t25}} for length, and by three quarters length is ahead again, {{len_t75}} against {{rbm_t75}}. These are prefixes of one pass over the whole episode (§7). Failed rollouts are slow; most do not reach the task's longest episode. Both readings fixed in the protocol hold.
 
 ![Length observed up to a fraction of the task's longest episode, AUROC within policy: most of the signal is there by half the episode (band: 95 % CI).](fig/truncation.png)
 
@@ -133,11 +133,11 @@ on the threshold. Fresh rollouts scored at the frozen thresholds would confirm t
 therefore gets the policy-identity null for free. The risk head is trained and tested on the same 50 episodes. Five
 folds by episode keep episodes from leaking, but tasks and policies leak. The fine-tune comparison is in-sample, because the release has no held-out episodes, and its config needed three training-only keys removed to load in the pinned code. Robometer's truncated scores are prefixes of one pass over the whole episode. A frame's value may depend on later frames, so a pass over a clip that ends at the cut could give a different number. The {{rbm_n_rescore}} episodes that ran out of memory in the first pass were scored in a second pass on a larger GPU, with every frame kept. TOPReward's paper does
 not give its prefix count, frames per query or Yes/No wording, so those are our choices. The ArmnetBench result covers
-eight tasks. The timeout is approximated by each task's longest episode.
+eight tasks. The reference length is each task's longest episode; the benchmark sets no time limit.
 
 ## 8 Conclusion
 
-> **Conclusion.** On ArmnetBench, where runs end at a time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
+> **Conclusion.** On ArmnetBench, where the operator stopped each rollout and there was no set time limit, episode length beat both zero-shot reward models, and a fine-tune beat it only on the episodes it was trained on. On our operator-stopped
 > rollouts length was at chance, and a judge that saw the whole finished episode caught the failures. When you evaluate
 > a reward model as a failure detector, report episode length within policy on the same rows and say how the episodes
 > ended.

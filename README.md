@@ -1,6 +1,6 @@
 # What a reward model can show depends on who stopped the episode
 
-Failure judges and reward models on a low-cost arm, set against elapsed time. On 2,047 public SO-101 rollouts that end at a time limit, episode length separates failures from successes better than two zero-shot reward models; on operator-stopped rollouts, length is blind and judges at rest work. Every number is recomputed from `repro/`.
+Failure judges and reward models on a low-cost arm, set against elapsed time. On 2,047 public SO-101 rollouts that the operator stopped (no set time limit), episode length separates failures from successes better than two zero-shot reward models; on operator-stopped rollouts, length is blind and judges at rest work. Every number is recomputed from `repro/`.
 
 ## What is here
 

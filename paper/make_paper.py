@@ -242,7 +242,7 @@ def figures():
     from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
     GREEN, AMBER, RED = sc.CATEGORICAL[2], sc.CATEGORICAL[1], sc.CATEGORICAL[3]
     fig, ax = plt.subplots(figsize=(7.0, 1.75)); ax.set_xlim(0, 100); ax.set_ylim(0, 22); ax.axis("off")
-    lanes = [(12.0, "ArmnetBench, {} rollouts".format(N["ab_n"]), "runs end at a time limit;\nfailed runs are slow", "episode length alone\nAUROC {} within policy".format(N["len_within"]), GREEN,
+    lanes = [(12.0, "ArmnetBench, {} rollouts".format(N["ab_n"]), "operator stops each run, no set limit;\nfailed runs are slow", "episode length alone\nAUROC {} within policy".format(N["len_within"]), GREEN,
               "zero-shot reward models {} and below,\nthe fine-tune {} on its own training episodes".format(N["rbm_within"], N["ft_within"]), RED),
              (1.0, "our rollouts, {} operator-stopped".format(N["own_n"]), "the operator stops each run,\nfailed or not", "episode length alone\nAUROC {}, chance".format(N["own_len"]), AMBER,
               "whole-episode judge AUROC {};\nno mid-episode monitor reaches its bar".format(N["flora_auc"]), GREEN)]
