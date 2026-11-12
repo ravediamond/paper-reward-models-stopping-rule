@@ -1,0 +1,55 @@
+{
+ "note": "Exploratory (added 2026-11-12, after the gate results were known; no bar): the two free baselines of the paper,",
+ "n_resamples": 2000,
+ "seed": 0,
+ "flora": {
+  "n": 50,
+  "failures": 8,
+  "successes": 42,
+  "failures_by_policy": {
+   "act": 1,
+   "smolvla": 1,
+   "smolvla_vlacpp": 2,
+   "smolvla_vlacpp_fa": 3,
+   "vla_jepa": 1
+  },
+  "auroc": {
+   "judge": 1.0,
+   "policy_identity": 0.6488095238095238,
+   "length": 0.5669642857142857
+  },
+  "judge_minus_policy_identity": {
+   "point": 0.35119047619047616,
+   "ci95": [
+    0.11555555555555552,
+    0.40436590436590436
+   ],
+   "valid_resamples": 2000
+  }
+ },
+ "qwen27": {
+  "n": 50,
+  "failures": 8,
+  "successes": 42,
+  "failures_by_policy": {
+   "act": 1,
+   "smolvla": 1,
+   "smolvla_vlacpp": 2,
+   "smolvla_vlacpp_fa": 3,
+   "vla_jepa": 1
+  },
+  "auroc": {
+   "judge": 0.9136904761904762,
+   "policy_identity": 0.6488095238095238,
+   "length": 0.5669642857142857
+  },
+  "judge_minus_policy_identity": {
+   "point": 0.26488095238095233,
+   "ci95": [
+    -0.05777777777777782,
+    0.3410087719298245
+   ],
+   "valid_resamples": 2000
+  }
+ }
+}

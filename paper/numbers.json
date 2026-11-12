@@ -291,6 +291,10 @@
   "value": "462",
   "anchor": "repro/length-null/expected/robometer_length.json (analysis (c), amendment 2026-11-05 of PROTOCOL.md)"
  },
+ "rbm_n_scored": {
+  "value": "2,099",
+  "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete"
+ },
  "rbm_pooled": {
   "value": "0.818",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete"
@@ -378,6 +382,46 @@
  "rbm_within_min": {
   "value": "0.79",
   "anchor": "repro/robometer-judge/expected/g9a_ab_complete.json, G9a-AB complete: within_policy block, min per-policy AUROC"
+ },
+ "reap_auroc": {
+  "value": "0.72",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "reap_caught": {
+  "value": "2",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "reap_fi": {
+  "value": "1",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_fl_d": {
+  "value": "0.35",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_fl_hi": {
+  "value": "0.40",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_fl_lo": {
+  "value": "0.12",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_len": {
+  "value": "0.57",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_pol": {
+  "value": "0.65",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_q_hi": {
+  "value": "0.34",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+ },
+ "s50_q_lo": {
+  "value": "-0.06",
+  "anchor": "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
  },
  "t50_hi": {
   "value": "0.873",

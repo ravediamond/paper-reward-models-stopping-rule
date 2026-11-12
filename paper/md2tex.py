@@ -25,8 +25,8 @@ def esc(x):
 
 RP = r">{\raggedright\arraybackslash}p"  # ragged cells: long file names must not overflow the column
 COLSPEC = {3: ("table", r"p{3.0cm}p{2.4cm}p{2.6cm}"),
-           6: ("table*", r"p{3.0cm}p{1.1cm}p{3.2cm}p{1.3cm}p{1.4cm}p{2.3cm}"),
-           4: ("table", RP + "{1.95cm}" + RP + "{1.4cm}" + RP + "{2.35cm}" + RP + "{1.4cm}")}
+           7: ("table*", r"p{2.8cm}p{2.2cm}p{1.0cm}p{3.1cm}p{1.1cm}p{1.2cm}p{2.3cm}"),
+           4: ("table", RP + "{2.3cm}" + RP + "{1.5cm}" + RP + "{2.0cm}" + RP + "{2.1cm}")}
 
 
 def brk(c):
@@ -59,6 +59,15 @@ def convert(block_lines):
             out += "\\begin{lstlisting}\n" + "\n".join(block_lines[i + 1:j]) + "\n\\end{lstlisting}\n"
             i = j + 1
             continue
+        if l.startswith("> "):  # a "> **Name.** ..." block is a finding box of the design layer
+            j = i
+            while j < len(block_lines) and block_lines[j].startswith(">"):
+                j += 1
+            q = " ".join(x[1:].strip() for x in block_lines[i:j])
+            m = re.match(r"\*\*(.+?)\*\*\s*(.*)", q, flags=re.S)
+            out += "\\begin{shissofinding}[%s]\n%s\n\\end{shissofinding}\n" % (esc(m.group(1)), esc(m.group(2)))
+            i = j
+            continue
         if re.match(r"Table \d+: ", l):
             cap = esc(l.split(": ", 1)[1])
         elif l.startswith("|"):
@@ -69,6 +78,9 @@ def convert(block_lines):
                 i += 1
             out += table(rows, cap); cap = ""
             continue
+        elif (m := re.match(r"!\[Fig\. 1 — (.*?)\. (.*)\]\((.*)\)", l)):
+            out += ("\\begin{figure*}[t]\\centering\\includegraphics[width=\\textwidth]{%s}\\caption{\\textbf{%s.} %s}\\end{figure*}\n\n"
+                    % (m.group(3).replace(".png", ".pdf"), esc(m.group(1)[0].upper() + m.group(1)[1:]), esc(m.group(2))))
         elif m := re.match(r"!\[(.*)\]\((.*)\)", l):
             out += ("\\begin{figure}[t]\\centering\\includegraphics[width=\\columnwidth]{%s}\\caption{%s}\\end{figure}\n\n"
                     % (m.group(2).replace(".png", ".pdf"), esc(m.group(1))))
@@ -102,13 +114,9 @@ TPL = r"""\documentclass[10pt,twocolumn]{article}
 \usepackage{style/shisso}
 \shissorepo{github.com/ravediamond/paper-reward-models-stopping-rule}
 \title{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}
-\author{Ravindu Somawansa\\Shisso Robotics, Paris\\\texttt{ravindu.somawansa@shissorobotics.com}\thanks{Code, result files and the checks that regenerate every number: \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}. The frozen protocols are copied verbatim under \texttt{repro/}; the bar commits named in the paper belong to the authors' research repository \texttt{ravediamond/road-to-robotics}.}}
 \date{}
 \begin{document}
-\maketitle
-\begin{abstract}
-ABSTRACT
-\end{abstract}
+\twocolumn[\vspace*{0.32in}\shissopanel{What a reward model can show depends on who stopped the episode: failure judges and monitors on a low-cost arm}{Ravindu Somawansa\\[1pt]Shisso Robotics, Paris\\[1pt]\texttt{ravindu.somawansa@shissorobotics.com}}{ABSTRACT}{\textbf{Code and rows:} \texttt{github.com/ravediamond/paper-reward-models-stopping-rule}\quad\textbf{Reproduce:} \texttt{make check}}\vspace{4pt}]
 BODY
 \bibliographystyle{plainnat}
 \bibliography{refs}

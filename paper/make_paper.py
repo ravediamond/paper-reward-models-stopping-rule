@@ -101,6 +101,7 @@ def collect():
     put("t50_run_fail", 100 * t5["still_running_failures"], a, "{:.0f}"); put("t50_run_ok", 100 * t5["still_running_successes"], a, "{:.0f}")
     g = J(R / "robometer-judge/expected/g9a_ab_complete.json")["complete"]
     a = "G9a-AB complete, projects/vla-jepa-world-model/robometer/results/g9a_ab/complete.json"
+    put("rbm_n_scored", g["n_scored"], a, "{:,d}")
     put("rbm_pooled", g["pooled_auroc"], a); put("rbm_lo", g["pooled_ci95"][0], a); put("rbm_hi", g["pooled_ci95"][1], a)
     wp = g["within_policy"]
     W = sum(v["n_success"] * v["n_failure"] for v in wp.values())
@@ -179,6 +180,14 @@ def collect():
         put(f"rbm_t{k}", T["robometer_within_policy"], a); put(f"rbm_t{k}_lo", T["robometer_ci95"][0], a); put(f"rbm_t{k}_hi", T["robometer_ci95"][1], a)
         put(f"len_t{k}", T["length_within_policy"], a); put(f"rbm_t{k}_d_lo", T["difference_ci95"][0], a); put(f"rbm_t{k}_d_hi", T["difference_ci95"][1], a)
     put("rbm_n_rescore", C["sources"]["rescore"], a, "{:d}")
+    RP = J(R / "reap-rebuild/expected/results.json")["main_set"]; a = "repro/reap-rebuild/expected/results.json main_set.seed0.comb:true (ReAP rebuilt from the paper, WS-217; fetched from paper-register-reproducibility@b41d795)"
+    c = RP["seed0"]["comb:true"]
+    S5 = J(R / "flora-input-format/expected/baselines_same50.json"); a = "repro/flora-input-format/expected/baselines_same50.json (exploratory, baselines_same50.py, 2026-11-12)"
+    put("s50_pol", S5["flora"]["auroc"]["policy_identity"], a, "{:.2f}"); put("s50_len", S5["flora"]["auroc"]["length"], a, "{:.2f}")
+    put("s50_fl_d", S5["flora"]["judge_minus_policy_identity"]["point"], a, "{:.2f}")
+    put("s50_fl_lo", S5["flora"]["judge_minus_policy_identity"]["ci95"][0], a, "{:.2f}"); put("s50_fl_hi", S5["flora"]["judge_minus_policy_identity"]["ci95"][1], a, "{:.2f}")
+    put("s50_q_lo", S5["qwen27"]["judge_minus_policy_identity"]["ci95"][0], a, "{:.2f}"); put("s50_q_hi", S5["qwen27"]["judge_minus_policy_identity"]["ci95"][1], a, "{:.2f}")
+    put("reap_caught", c["caught"], a, "{:d}"); put("reap_fi", c["fi"], a, "{:d}"); put("reap_auroc", c["auroc"], a, "{:.2f}")
 
 def figures():
     import matplotlib
